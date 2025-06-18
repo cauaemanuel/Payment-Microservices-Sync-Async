@@ -1,4 +1,4 @@
-package com.user_service.config.security;
+package com.user_service.config.security.service;
 
 import com.user_service.model.entity.User;
 import com.user_service.repository.UserRepository;
@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserDetailsServiceImple implements UserDetailsService {
 
     @Autowired
