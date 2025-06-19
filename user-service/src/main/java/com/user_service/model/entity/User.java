@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "tb_user")
 @Data
 public class User implements UserDetails {
 
@@ -35,7 +35,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return getPassword();
+        return getSenha();
     }
 
     @Override

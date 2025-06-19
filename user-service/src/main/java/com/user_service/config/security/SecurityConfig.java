@@ -47,8 +47,10 @@ public class SecurityConfig {
                         .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
                         .requestMatchers(ENDPOINTS_BUSINESS).hasRole("BUSINESS")
                         .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CUSTOMER")
-                        .anyRequest().denyAll()
+                        .requestMatchers("/h2-console/**").permitAll() // H2 console access
+                        .anyRequest().authenticated()
                 )
+                .headers(headers -> headers.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())) // H2 console requires this
                 .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

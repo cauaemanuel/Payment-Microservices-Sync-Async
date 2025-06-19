@@ -29,24 +29,31 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = recoveryToken(request);
-        if (token != null) {
-            String subject = tokenService.getSubjectFromToken(token);
-            User user = userRepository.findByEmail(subject).get();
-
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (checkIfEndpointIsNotPublic(request)) {
+            String token = recoveryToken(request);
+            if (token != null) {
+                    String subject = tokenService.getSubjectFromToken(token);
+                    User user = userRepository.findByEmail(subject).get();
+                    Authentication authentication =
+                            new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(request, response);
     }
 
+    // Recupera o token do cabeçalho Authorization da requisição
     private String recoveryToken(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null) {
             return authorizationHeader.replace("Bearer ", "");
         }
         return null;
+    }
+
+    // Verifica se o endpoint requer autenticação antes de processar a requisição
+    private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        return !Arrays.asList(SecurityConfig.ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).contains(requestURI);
     }
 }
