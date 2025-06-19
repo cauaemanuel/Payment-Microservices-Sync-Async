@@ -1,0 +1,84 @@
+package com.user_service.service;
+
+import com.user_service.config.security.SecurityConfig;
+import com.user_service.config.security.service.TokenService;
+import com.user_service.model.dto.CreateUserDTO;
+import com.user_service.model.dto.LoginUserDto;
+import com.user_service.model.dto.RecoveryJwtTokenDto;
+import com.user_service.model.entity.User;
+import com.user_service.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private TokenService tokenService;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private SecurityConfig securityConfig;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    private UserService userService;
+
+    @BeforeEach
+    void setup() {
+        lenient().when(securityConfig.passwordEncoder()).thenReturn(passwordEncoder);
+    }
+
+    @Test
+    void deveAutenticarUsuarioComSucesso() {
+        LoginUserDto loginDto = new LoginUserDto("email@teste.com", "senha");
+        User user = new User();
+        Authentication authentication = mock(Authentication.class);
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(user);
+        when(tokenService.generateToken(user)).thenReturn("token-jwt");
+
+        RecoveryJwtTokenDto result = userService.authenticateUser(loginDto);
+
+        assertEquals("token-jwt", result.token());
+    }
+
+    @Test
+    void deveCadastrarUsuarioComSucesso() {
+        CreateUserDTO dto = new CreateUserDTO("nome", "email@teste.com", "senha", "CUSTOMER");
+        when(userRepository.findByEmail(dto.email())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(dto.password())).thenReturn("senha-criptografada");
+
+        assertDoesNotThrow(() -> userService.createUser(dto));
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void deveLancarExcecaoQuandoEmailJaExisteNoCadastro() {
+        CreateUserDTO dto = new CreateUserDTO("nome", "email@teste.com", "senha", "CUSTOMER");
+        when(userRepository.findByEmail(dto.email())).thenReturn(Optional.of(new User()));
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> userService.createUser(dto));
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+        assertEquals("Usuário já cadastrado com este email", ex.getReason());
+    }
+}
