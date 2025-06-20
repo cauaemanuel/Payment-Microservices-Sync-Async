@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 public class PaymentProducer {
 
 
+
     public void processPayment(String destinationId, String sourceId, double amount) {
         // Logic to process payment
     }
