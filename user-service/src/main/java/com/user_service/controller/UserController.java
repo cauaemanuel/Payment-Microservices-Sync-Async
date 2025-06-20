@@ -24,23 +24,14 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> createUser(@RequestBody CreateUserDTO createUserDto) {
-        userService.createUser(createUserDto);
+        userService.registerUser(createUserDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> getAuthenticationTest() {
-        return new ResponseEntity<>("Autenticado com sucesso", HttpStatus.OK);
-    }
-
-    @GetMapping("/test/customer")
-    public ResponseEntity<String> getCustomerAuthenticationTest() {
-        return new ResponseEntity<>("Cliente autenticado com sucesso", HttpStatus.OK);
-    }
-
-    @GetMapping("/test/business")
-    public ResponseEntity<String> getAdminAuthenticationTest() {
-        return new ResponseEntity<>("Business autenticado com sucesso", HttpStatus.OK);
+    @GetMapping("/exists")
+    public ResponseEntity<Boolean> exists(@RequestParam String userId) {
+        boolean exists = userService.isUserExists(userId);
+        return new ResponseEntity<>(exists, HttpStatus.OK);
     }
 
 }

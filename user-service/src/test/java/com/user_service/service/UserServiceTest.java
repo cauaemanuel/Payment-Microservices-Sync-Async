@@ -68,7 +68,7 @@ class UserServiceTest {
         when(userRepository.findByEmail(dto.email())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(dto.password())).thenReturn("senha-criptografada");
 
-        assertDoesNotThrow(() -> userService.createUser(dto));
+        assertDoesNotThrow(() -> userService.registerUser(dto));
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -77,7 +77,7 @@ class UserServiceTest {
         CreateUserDTO dto = new CreateUserDTO("nome", "email@teste.com", "senha", "CUSTOMER");
         when(userRepository.findByEmail(dto.email())).thenReturn(Optional.of(new User()));
 
-        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> userService.createUser(dto));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> userService.registerUser(dto));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
         assertEquals("Usuário já cadastrado com este email", ex.getReason());
     }
