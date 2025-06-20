@@ -7,7 +7,7 @@ import com.payment_api_service.producer.PaymentProducer;
 public class InitiateTransferUseCase {
 
     private UserClient userClient;
-    private WalletClient WalletClient;
+    private WalletClient walletClient;
     private PaymentProducer paymentProducer;
 
     public void transfer(String destinationId, String sourceId, double amount) {
@@ -27,8 +27,9 @@ public class InitiateTransferUseCase {
         if (!userClient.exists(sourceId)) {
             throw new IllegalArgumentException("Source user does not exist with ID: " + sourceId);
         }
-        // Logic to initiate the transfer would go here
-        //walletVerify
+        if(!walletClient.verifyAmount(sourceId, amount)){
+            throw new IllegalArgumentException("Insufficient funds in source wallet for user ID: " + sourceId);
+        }
 
         paymentProducer.processPayment(destinationId, sourceId, amount);
     }

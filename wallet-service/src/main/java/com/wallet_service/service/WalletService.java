@@ -47,4 +47,18 @@ public class WalletService {
         walletRepository.save(wallet);
     }
 
+    public boolean verifyAmount(String userId, Double amount) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero");
+        }
+
+        var wallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Wallet not found for user ID: " + userId));
+
+        return wallet.getBalance() >= amount;
+    }
 }

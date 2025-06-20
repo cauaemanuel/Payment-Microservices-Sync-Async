@@ -32,4 +32,10 @@ public class WalletController {
         return ResponseEntity.ok("Wallet balance updated successfully");
     }
 
+    @GetMapping("/{id}/verify-amount")
+    public ResponseEntity verifyAmount(@PathVariable String id, @RequestParam Double amount) {
+        boolean isValid = walletService.verifyAmount(id, amount);
+        return ResponseEntity.ok(isValid);
+    }
+
 }
