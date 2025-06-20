@@ -1,17 +1,23 @@
 package com.payment_api_service.service.interactors;
 
-import com.payment_api_service.client.UserClient;
 import com.payment_api_service.client.WalletClient;
 import com.payment_api_service.producer.PaymentProducer;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class InitiateTransferUseCase {
 
-    private UserClient userClient;
     private WalletClient walletClient;
     private PaymentProducer paymentProducer;
 
+    public InitiateTransferUseCase(WalletClient walletClient, PaymentProducer paymentProducer) {
+        this.walletClient = walletClient;
+        this.paymentProducer = paymentProducer;
+    }
+
     public void transfer(String destinationId, String sourceId, double amount) {
 
+        log.info("Initiating transfer from source ID: {} to destination ID: {} with amount: {}", sourceId, destinationId, amount);
         if (destinationId == null || destinationId.isEmpty()) {
             throw new IllegalArgumentException("Destination ID cannot be null or empty");
         }
@@ -21,10 +27,10 @@ public class InitiateTransferUseCase {
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount must be greater than zero");
         }
-        if (!userClient.exists(destinationId)) {
+        if (!walletClient.exists(destinationId)) {
             throw new IllegalArgumentException("Destination user does not exist with ID: " + destinationId);
         }
-        if (!userClient.exists(sourceId)) {
+        if (!walletClient.exists(sourceId)) {
             throw new IllegalArgumentException("Source user does not exist with ID: " + sourceId);
         }
         if(!walletClient.verifyAmount(sourceId, amount)){
@@ -33,5 +39,4 @@ public class InitiateTransferUseCase {
 
         paymentProducer.processPayment(destinationId, sourceId, amount);
     }
-
 }

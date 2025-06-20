@@ -61,4 +61,12 @@ public class WalletService {
 
         return wallet.getBalance() >= amount;
     }
+
+    public boolean isWalletExists(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+        return walletRepository.existsByUserId(userId);
+    }
+
 }

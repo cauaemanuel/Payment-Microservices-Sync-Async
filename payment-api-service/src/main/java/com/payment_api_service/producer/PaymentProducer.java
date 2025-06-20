@@ -1,5 +1,8 @@
 package com.payment_api_service.producer;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class PaymentProducer {
 
 

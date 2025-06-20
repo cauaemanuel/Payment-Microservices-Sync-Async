@@ -10,4 +10,7 @@ public interface WalletClient {
 
     @GetMapping("/wallet/{id}/verify-amount")
     boolean verifyAmount(@PathVariable String id, @RequestParam Double amount);
+
+    @GetMapping("/wallet/exists")
+    boolean exists(@RequestParam String userId);
 }

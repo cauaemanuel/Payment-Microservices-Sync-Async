@@ -38,4 +38,10 @@ public class WalletController {
         return ResponseEntity.ok(isValid);
     }
 
+    @GetMapping("/exists")
+    public ResponseEntity<Boolean> exists(@RequestParam String userId) {
+        boolean exists = walletService.isWalletExists(userId);
+        return ResponseEntity.ok(exists);
+    }
+
 }
