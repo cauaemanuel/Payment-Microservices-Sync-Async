@@ -1,5 +1,6 @@
-package com.user_service.model.entity;
+package com.user_service.infrastructure.persistence;
 
+import com.user_service.domain.entity.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 @Entity(name = "tb_user")
 @Data
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -63,24 +64,5 @@ public class User implements UserDetails {
         return UserDetails.super.isEnabled();
     }
 
-    public enum UserRole {
-        BUSINESS,
-        CUSTOMER;
 
-        @com.fasterxml.jackson.annotation.JsonCreator
-        public static UserRole fromString(String value) {
-            for (UserRole role : UserRole.values()) {
-                if (role.name().equalsIgnoreCase(value)) {
-                    return role;
-                }
-            }
-            throw new IllegalArgumentException("Valor inválido para userRole: " + value +
-                    ". Os valores válidos são: BUSINESS, CUSTOMER");
-        }
-
-        @com.fasterxml.jackson.annotation.JsonValue
-        public String getValue() {
-            return name();
-        }
-    }
 }

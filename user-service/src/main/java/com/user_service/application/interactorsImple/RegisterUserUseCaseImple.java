@@ -1,24 +1,25 @@
-package com.user_service.service.interactors;
+package com.user_service.application.interactorsImple;
 
-import com.user_service.config.security.SecurityConfig;
-import com.user_service.model.dto.CreateUserDTO;
-import com.user_service.model.entity.User;
-import com.user_service.repository.UserRepository;
+import com.user_service.domain.entity.User;
+import com.user_service.domain.entity.UserRole;
+import com.user_service.domain.repository.UserRepository;
+import com.user_service.application.interactors.RegisterUserUseCase;
+import com.user_service.domain.dto.CreateUserDTO;
+import com.user_service.infrastructure.security.SecurityConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class RegisterUserUseCase {
+public class RegisterUserUseCaseImple implements RegisterUserUseCase {
 
     private UserRepository userRepository;
     private SecurityConfig securityConfig;
 
-    public RegisterUserUseCase(UserRepository userRepository, SecurityConfig securityConfig) {
+    public RegisterUserUseCaseImple (UserRepository userRepository, SecurityConfig securityConfig) {
         this.userRepository = userRepository;
         this.securityConfig = securityConfig;
     }
 
-    public void registerUser(CreateUserDTO createUserDto) {
-
+    public void execute(CreateUserDTO createUserDto) {
         if (userRepository.findByEmail(createUserDto.email()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já cadastrado com este email");
         }
@@ -27,7 +28,7 @@ public class RegisterUserUseCase {
         newUser.setEmail(createUserDto.email());
         newUser.setSenha(securityConfig.passwordEncoder().encode(createUserDto.password()));
         newUser.setNome(createUserDto.nome());
-        newUser.setRole(User.UserRole.fromString(createUserDto.role()));
+        newUser.setRole(UserRole.fromString(createUserDto.role()));
 
         userRepository.save(newUser);
     }

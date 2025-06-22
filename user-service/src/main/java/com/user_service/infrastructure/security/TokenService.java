@@ -1,10 +1,11 @@
-package com.user_service.config.security.service;
+package com.user_service.infrastructure.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.user_service.model.entity.User;
+import com.user_service.domain.entity.User;
+import com.user_service.infrastructure.persistence.UserEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,7 +19,7 @@ public class TokenService {
 
     private static final String ISSUER = "pizzurg-api";
 
-    public String generateToken(User user) {
+    public String generateToken(UserEntity user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
             return JWT.create()

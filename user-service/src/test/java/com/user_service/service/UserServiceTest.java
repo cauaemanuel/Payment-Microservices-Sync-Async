@@ -1,12 +1,12 @@
 package com.user_service.service;
 
-import com.user_service.config.security.SecurityConfig;
-import com.user_service.config.security.service.TokenService;
-import com.user_service.model.dto.CreateUserDTO;
-import com.user_service.model.dto.LoginUserDto;
-import com.user_service.model.dto.RecoveryJwtTokenDto;
-import com.user_service.model.entity.User;
-import com.user_service.repository.UserRepository;
+import com.user_service.infrastructure.security.SecurityConfig;
+import com.user_service.infrastructure.security.TokenService;
+import com.user_service.domain.dto.CreateUserDTO;
+import com.user_service.domain.dto.LoginUserDto;
+import com.user_service.domain.dto.RecoveryJwtTokenDto;
+import com.user_service.domain.entity.User;
+import com.user_service.infrastructure.persistence.SpringDataUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ class UserServiceTest {
     @Mock
     private TokenService tokenService;
     @Mock
-    private UserRepository userRepository;
+    private SpringDataUserRepository springDataUserRepository;
     @Mock
     private SecurityConfig securityConfig;
     @Mock
@@ -65,17 +65,17 @@ class UserServiceTest {
     @Test
     void deveCadastrarUsuarioComSucesso() {
         CreateUserDTO dto = new CreateUserDTO("nome", "email@teste.com", "senha", "CUSTOMER");
-        when(userRepository.findByEmail(dto.email())).thenReturn(Optional.empty());
+        when(springDataUserRepository.findByEmail(dto.email())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(dto.password())).thenReturn("senha-criptografada");
 
         assertDoesNotThrow(() -> userService.registerUser(dto));
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(springDataUserRepository, times(1)).save(any(User.class));
     }
 
     @Test
     void deveLancarExcecaoQuandoEmailJaExisteNoCadastro() {
         CreateUserDTO dto = new CreateUserDTO("nome", "email@teste.com", "senha", "CUSTOMER");
-        when(userRepository.findByEmail(dto.email())).thenReturn(Optional.of(new User()));
+        when(springDataUserRepository.findByEmail(dto.email())).thenReturn(Optional.of(new User()));
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> userService.registerUser(dto));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());

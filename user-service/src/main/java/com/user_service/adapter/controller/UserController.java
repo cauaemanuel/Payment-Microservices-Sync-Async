@@ -1,13 +1,14 @@
-package com.user_service.controller;
+package com.user_service.adapter.controller;
 
-import com.user_service.model.dto.CreateUserDTO;
-import com.user_service.model.dto.LoginUserDto;
-import com.user_service.model.dto.RecoveryJwtTokenDto;
-import com.user_service.service.UserService;
+import com.user_service.application.interactors.LoginUserUseCase;
+import com.user_service.application.interactors.RegisterUserUseCase;
+import com.user_service.application.interactors.UserExistsUseCase;
+import com.user_service.domain.dto.CreateUserDTO;
+import com.user_service.domain.dto.LoginUserDto;
+import com.user_service.domain.dto.RecoveryJwtTokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private LoginUserUseCase loginUserUseCase;
+    private RegisterUserUseCase registerUserUseCase;
+    private UserExistsUseCase userExistsUseCase;
+
+    public UserController(LoginUserUseCase loginUserUseCase,
+                          RegisterUserUseCase registerUserUseCase,
+                          UserExistsUseCase userExistsUseCase) {
+        this.loginUserUseCase = loginUserUseCase;
+        this.registerUserUseCase = registerUserUseCase;
+        this.userExistsUseCase = userExistsUseCase;
+    }
 
     @Operation(summary = "Autentica um usuário e retorna o token JWT")
     @ApiResponses(value = {
@@ -25,8 +35,8 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Credenciais inválidas")
     })
     @PostMapping("/login")
-    public ResponseEntity<RecoveryJwtTokenDto> authenticateUser(@RequestBody LoginUserDto loginUserDto) {
-        RecoveryJwtTokenDto token = userService.authenticateUser(loginUserDto);
+    public ResponseEntity<RecoveryJwtTokenDto> login(@RequestBody LoginUserDto loginUserDto) {
+        RecoveryJwtTokenDto token = loginUserUseCase.execute(loginUserDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
@@ -36,8 +46,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou usuário já existe")
     })
     @PostMapping("/register")
-    public ResponseEntity<Void> createUser(@RequestBody CreateUserDTO createUserDto) {
-        userService.registerUser(createUserDto);
+    public ResponseEntity<Void> register(@RequestBody CreateUserDTO createUserDto) {
+        registerUserUseCase.execute(createUserDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -47,7 +57,7 @@ public class UserController {
     })
     @GetMapping("/exists")
     public ResponseEntity<Boolean> exists(@RequestParam String userId) {
-        boolean exists = userService.isUserExists(userId);
+        boolean exists = userExistsUseCase.execute(userId);
         return new ResponseEntity<>(exists, HttpStatus.OK);
     }
 

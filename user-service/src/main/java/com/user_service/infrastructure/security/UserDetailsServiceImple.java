@@ -1,24 +1,22 @@
-package com.user_service.config.security.service;
+package com.user_service.infrastructure.security;
 
-import com.user_service.model.entity.User;
-import com.user_service.repository.UserRepository;
+import com.user_service.infrastructure.persistence.SpringDataUserRepository;
+import com.user_service.infrastructure.persistence.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class UserDetailsServiceImple implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private SpringDataUserRepository springDataUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
+        UserEntity user = springDataUserRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + username));
         return user;
     }

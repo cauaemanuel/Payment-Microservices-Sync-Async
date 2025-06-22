@@ -1,4 +1,4 @@
-package com.user_service.config.security;
+package com.user_service.infrastructure.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

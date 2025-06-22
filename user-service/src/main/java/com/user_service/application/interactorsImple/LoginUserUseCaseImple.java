@@ -1,30 +1,31 @@
-package com.user_service.service.interactors;
+package com.user_service.application.interactorsImple;
 
-import com.user_service.config.security.service.TokenService;
-import com.user_service.model.dto.LoginUserDto;
-import com.user_service.model.dto.RecoveryJwtTokenDto;
-import com.user_service.model.entity.User;
+import com.user_service.application.interactors.LoginUserUseCase;
+import com.user_service.domain.dto.LoginUserDto;
+import com.user_service.domain.dto.RecoveryJwtTokenDto;
+import com.user_service.infrastructure.persistence.UserEntity;
+import com.user_service.infrastructure.security.TokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-public class LoginUserUseCase {
+public class LoginUserUseCaseImple implements LoginUserUseCase {
 
     private AuthenticationManager authenticationManager;
     private TokenService tokenService;
 
-    public LoginUserUseCase(AuthenticationManager authenticationManager, TokenService tokenService) {
+    public LoginUserUseCaseImple(AuthenticationManager authenticationManager, TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
     }
 
-    public RecoveryJwtTokenDto loginUser(LoginUserDto loginUserDto){
+    public RecoveryJwtTokenDto execute(LoginUserDto loginUserDto){
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(loginUserDto.email(), loginUserDto.password());
 
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-        User userDetails = (User) authentication.getPrincipal();
+        UserEntity userDetails = (UserEntity) authentication.getPrincipal();
 
         return new RecoveryJwtTokenDto(tokenService.generateToken(userDetails));
     }

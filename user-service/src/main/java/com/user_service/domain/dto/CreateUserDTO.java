@@ -1,4 +1,4 @@
-package com.user_service.model.dto;
+package com.user_service.domain.dto;
 
 public record CreateUserDTO(
         String nome,

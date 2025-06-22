@@ -1,8 +1,7 @@
-package com.user_service.config.security;
+package com.user_service.infrastructure.security;
 
-import com.user_service.config.security.service.TokenService;
-import com.user_service.model.entity.User;
-import com.user_service.repository.UserRepository;
+import com.user_service.infrastructure.persistence.SpringDataUserRepository;
+import com.user_service.infrastructure.persistence.UserEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     private TokenService tokenService;
 
     @Autowired
-    private UserRepository userRepository;
+    private SpringDataUserRepository springDataUserRepository;
 
 
     @Override
@@ -33,7 +32,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             String token = recoveryToken(request);
             if (token != null) {
                     String subject = tokenService.getSubjectFromToken(token);
-                    User user = userRepository.findByEmail(subject).get();
+                    UserEntity user = springDataUserRepository.findByEmail(subject).get();
                     Authentication authentication =
                             new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
