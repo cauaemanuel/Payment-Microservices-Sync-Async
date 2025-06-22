@@ -1,6 +1,5 @@
-package com.user_service.exception;
+package com.user_service.infrastructure.exception;
 
-import com.user_service.exception.ResponseError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

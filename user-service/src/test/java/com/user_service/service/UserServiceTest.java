@@ -2,9 +2,9 @@ package com.user_service.service;
 
 import com.user_service.infrastructure.security.SecurityConfig;
 import com.user_service.infrastructure.security.TokenService;
-import com.user_service.domain.dto.CreateUserDTO;
-import com.user_service.domain.dto.LoginUserDto;
-import com.user_service.domain.dto.RecoveryJwtTokenDto;
+import com.user_service.application.dto.CreateUserDTO;
+import com.user_service.application.dto.LoginUserDto;
+import com.user_service.application.dto.RecoveryJwtTokenDto;
 import com.user_service.domain.entity.User;
 import com.user_service.infrastructure.persistence.SpringDataUserRepository;
 import org.junit.jupiter.api.BeforeEach;

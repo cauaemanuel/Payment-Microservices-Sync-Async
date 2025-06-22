@@ -1,6 +1,6 @@
 package com.user_service.application.interactors;
 
-import com.user_service.domain.dto.CreateUserDTO;
+import com.user_service.application.dto.CreateUserDTO;
 
 
 public interface RegisterUserUseCase {

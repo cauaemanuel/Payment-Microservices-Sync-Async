@@ -4,7 +4,7 @@ import com.user_service.domain.entity.User;
 import com.user_service.domain.entity.UserRole;
 import com.user_service.domain.repository.UserRepository;
 import com.user_service.application.interactors.RegisterUserUseCase;
-import com.user_service.domain.dto.CreateUserDTO;
+import com.user_service.application.dto.CreateUserDTO;
 import com.user_service.infrastructure.security.SecurityConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

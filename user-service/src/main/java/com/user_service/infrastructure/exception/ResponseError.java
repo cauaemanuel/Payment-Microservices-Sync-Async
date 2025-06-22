@@ -1,4 +1,4 @@
-package com.user_service.exception;
+package com.user_service.infrastructure.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

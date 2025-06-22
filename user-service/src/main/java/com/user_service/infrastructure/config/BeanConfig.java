@@ -1,6 +1,6 @@
 package com.user_service.infrastructure.config;
 
-import com.user_service.adapter.repository.UserAdapterRepository;
+import com.user_service.infrastructure.persistence.UserRepositoryImple;
 import com.user_service.application.interactors.LoginUserUseCase;
 import com.user_service.application.interactors.RegisterUserUseCase;
 import com.user_service.application.interactors.UserExistsUseCase;
@@ -35,6 +35,6 @@ public class BeanConfig {
 
     @Bean
     public UserRepository userRepository(SpringDataUserRepository springDataUserRepository) {
-        return new UserAdapterRepository(springDataUserRepository);
+        return new UserRepositoryImple(springDataUserRepository);
     }
 }

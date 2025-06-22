@@ -1,11 +1,11 @@
-package com.user_service.adapter.controller;
+package com.user_service.infrastructure.controller;
 
 import com.user_service.application.interactors.LoginUserUseCase;
 import com.user_service.application.interactors.RegisterUserUseCase;
 import com.user_service.application.interactors.UserExistsUseCase;
-import com.user_service.domain.dto.CreateUserDTO;
-import com.user_service.domain.dto.LoginUserDto;
-import com.user_service.domain.dto.RecoveryJwtTokenDto;
+import com.user_service.application.dto.CreateUserDTO;
+import com.user_service.application.dto.LoginUserDto;
+import com.user_service.application.dto.RecoveryJwtTokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

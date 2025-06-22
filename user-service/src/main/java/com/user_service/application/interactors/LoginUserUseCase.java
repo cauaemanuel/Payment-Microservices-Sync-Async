@@ -1,7 +1,7 @@
 package com.user_service.application.interactors;
 
-import com.user_service.domain.dto.LoginUserDto;
-import com.user_service.domain.dto.RecoveryJwtTokenDto;
+import com.user_service.application.dto.LoginUserDto;
+import com.user_service.application.dto.RecoveryJwtTokenDto;
 
 public interface LoginUserUseCase {
 

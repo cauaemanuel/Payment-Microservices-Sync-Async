@@ -1,20 +1,18 @@
-package com.user_service.adapter.repository;
+package com.user_service.infrastructure.persistence;
 
 import com.user_service.domain.entity.User;
 import com.user_service.domain.repository.UserRepository;
-import com.user_service.infrastructure.persistence.SpringDataUserRepository;
-import com.user_service.infrastructure.persistence.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class UserAdapterRepository implements UserRepository {
+public class UserRepositoryImple implements UserRepository {
 
     private final SpringDataUserRepository springDataUserRepository;
 
-    public UserAdapterRepository(SpringDataUserRepository springDataUserRepository) {
+    public UserRepositoryImple(SpringDataUserRepository springDataUserRepository) {
         this.springDataUserRepository = springDataUserRepository;
     }
 
