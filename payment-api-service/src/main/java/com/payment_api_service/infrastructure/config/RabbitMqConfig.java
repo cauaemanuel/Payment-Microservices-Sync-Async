@@ -1,4 +1,4 @@
-package com.payment_api_service.config;
+package com.payment_api_service.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
