@@ -1,19 +1,22 @@
 package com.wallet_service.service;
 
-import com.wallet_service.client.UserClient;
-import com.wallet_service.repository.WalletRepository;
-import com.wallet_service.service.interactors.CreateWalletUseCase;
+import com.wallet_service.application.dto.TransactionMessageDto;
+import com.wallet_service.infrastructure.client.UserClient;
+import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
+import com.wallet_service.application.interactors.CreateWalletUseCase;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class WalletService {
 
-    private WalletRepository walletRepository;
+    private SpringJpaWalletRepository springJpaWalletRepository;
     private CreateWalletUseCase createWalletUseCase;
 
-    public WalletService(WalletRepository walletRepository, UserClient userClient) {
-        this.walletRepository = walletRepository;
-        this.createWalletUseCase = new CreateWalletUseCase(walletRepository, userClient);
+    public WalletService(SpringJpaWalletRepository springJpaWalletRepository, UserClient userClient) {
+        this.springJpaWalletRepository = springJpaWalletRepository;
+        this.createWalletUseCase = new CreateWalletUseCase(springJpaWalletRepository, userClient);
     }
 
     public void createWallet(String userId) {
@@ -25,7 +28,7 @@ public class WalletService {
             throw new IllegalArgumentException("User ID cannot be null or empty");
         }
 
-        var wallet = walletRepository.findByUserId(userId)
+        var wallet = springJpaWalletRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found for user ID: " + userId));
 
         return wallet.getBalance();
@@ -40,11 +43,11 @@ public class WalletService {
             throw new IllegalArgumentException("New balance cannot be negative");
         }
 
-        var wallet = walletRepository.findByUserId(userId)
+        var wallet = springJpaWalletRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found for user ID: " + userId));
 
         wallet.setBalance(wallet.getBalance() + newBalance);
-        walletRepository.save(wallet);
+        springJpaWalletRepository.save(wallet);
     }
 
     public boolean verifyAmount(String userId, Double amount) {
@@ -56,7 +59,7 @@ public class WalletService {
             throw new IllegalArgumentException("Amount must be greater than zero");
         }
 
-        var wallet = walletRepository.findByUserId(userId)
+        var wallet = springJpaWalletRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found for user ID: " + userId));
 
         return wallet.getBalance() >= amount;
@@ -66,7 +69,36 @@ public class WalletService {
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty");
         }
-        return walletRepository.existsByUserId(userId);
+        return springJpaWalletRepository.existsByUserId(userId);
+    }
+
+    public void processTransaction(TransactionMessageDto dto){
+        var sender = springJpaWalletRepository.findByUserId(dto.getSenderUserId());
+        var receiver = springJpaWalletRepository.findByUserId(dto.getRecipientUserId());
+
+        if (sender.isEmpty() || receiver.isEmpty()) {
+            throw new IllegalArgumentException("Sender or receiver wallet not found");
+            //enviar pra wallet failure
+        }
+
+        if (sender.get().getBalance() < dto.getAmount()) {
+            throw new IllegalArgumentException("Insufficient balance in sender's wallet");
+            //enviar pra wallet failure
+        }
+
+        // Deduct amount from sender's wallet
+        sender.get().setBalance(sender.get().getBalance() - dto.getAmount());
+        log.info("Deducted {} from sender's wallet. New balance: {}", dto.getAmount(), sender.get().getBalance());
+        // Add amount to receiver's wallet
+
+        receiver.get().setBalance(receiver.get().getBalance() + dto.getAmount());
+        log.info("Added {} to receiver's wallet. New balance: {}", dto.getAmount(), receiver.get().getBalance());
+
+        // Save both wallets
+        springJpaWalletRepository.save(sender.get());
+        springJpaWalletRepository.save(receiver.get());
+
+        // coloca na fila de sucesso
     }
 
 }

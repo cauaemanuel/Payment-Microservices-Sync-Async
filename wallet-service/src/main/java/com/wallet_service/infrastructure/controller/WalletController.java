@@ -1,4 +1,4 @@
-package com.wallet_service.controller;
+package com.wallet_service.infrastructure.controller;
 
 import com.wallet_service.service.WalletService;
 import org.springframework.http.ResponseEntity;

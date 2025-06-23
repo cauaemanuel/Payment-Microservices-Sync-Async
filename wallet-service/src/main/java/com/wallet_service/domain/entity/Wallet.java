@@ -1,10 +1,8 @@
-package com.wallet_service.model.entity;
+package com.wallet_service.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.Constraint;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "tb_wallet")

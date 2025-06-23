@@ -1,16 +1,16 @@
-package com.wallet_service.service.interactors;
+package com.wallet_service.application.interactors;
 
-import com.wallet_service.client.UserClient;
-import com.wallet_service.model.entity.Wallet;
-import com.wallet_service.repository.WalletRepository;
+import com.wallet_service.infrastructure.client.UserClient;
+import com.wallet_service.domain.entity.Wallet;
+import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
 
 public class CreateWalletUseCase {
 
-    private WalletRepository walletRepository;
+    private SpringJpaWalletRepository springJpaWalletRepository;
     private UserClient userClient;
 
-    public CreateWalletUseCase(WalletRepository walletRepository, UserClient userClient) {
-        this.walletRepository = walletRepository;
+    public CreateWalletUseCase(SpringJpaWalletRepository springJpaWalletRepository, UserClient userClient) {
+        this.springJpaWalletRepository = springJpaWalletRepository;
         this.userClient = userClient;
     }
 
@@ -19,7 +19,7 @@ public class CreateWalletUseCase {
             throw new IllegalArgumentException("User ID cannot be null or empty");
         }
 
-        if (walletRepository.existsByUserId(userId)) {
+        if (springJpaWalletRepository.existsByUserId(userId)) {
             throw new IllegalArgumentException("Wallet already exists for user ID: " + userId);
         }
 
@@ -30,6 +30,6 @@ public class CreateWalletUseCase {
         var wallet = new Wallet();
         wallet.setUserId(String.valueOf(userId));
         wallet.setBalance(0.0);
-        walletRepository.save(wallet);
+        springJpaWalletRepository.save(wallet);
     }
 }

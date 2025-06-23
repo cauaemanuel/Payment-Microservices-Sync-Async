@@ -1,8 +1,8 @@
 package com.wallet_service.service;
 
-import com.wallet_service.client.UserClient;
-import com.wallet_service.model.entity.Wallet;
-import com.wallet_service.repository.WalletRepository;
+import com.wallet_service.infrastructure.client.UserClient;
+import com.wallet_service.domain.entity.Wallet;
+import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,25 +13,25 @@ import static org.mockito.Mockito.*;
 
 class WalletServiceTest {
 
-    private WalletRepository walletRepository;
+    private SpringJpaWalletRepository springJpaWalletRepository;
     private UserClient userClient;
     private WalletService walletService;
 
     @BeforeEach
     void setUp() {
-        walletRepository = mock(WalletRepository.class);
+        springJpaWalletRepository = mock(SpringJpaWalletRepository.class);
         userClient = mock(UserClient.class);
-        walletService = new WalletService(walletRepository, userClient);
+        walletService = new WalletService(springJpaWalletRepository, userClient);
     }
 
     @Test
     void testCreateWalletDelegatesToUseCase() {
         when(userClient.exists("user1")).thenReturn(true);
-        when(walletRepository.existsByUserId("user1")).thenReturn(false);
+        when(springJpaWalletRepository.existsByUserId("user1")).thenReturn(false);
 
         walletService.createWallet("user1");
 
-        verify(walletRepository, times(1)).existsByUserId("user1");
+        verify(springJpaWalletRepository, times(1)).existsByUserId("user1");
     }
 
     @Test
@@ -40,7 +40,7 @@ class WalletServiceTest {
         wallet.setUserId("user1");
         wallet.setBalance(100.0);
 
-        when(walletRepository.findByUserId("user1")).thenReturn(Optional.of(wallet));
+        when(springJpaWalletRepository.findByUserId("user1")).thenReturn(Optional.of(wallet));
 
         Double balance = walletService.getGetWalletBalance("user1");
         assertEquals(100.0, balance);
@@ -48,7 +48,7 @@ class WalletServiceTest {
 
     @Test
     void testGetWalletBalanceThrowsWhenNotFound() {
-        when(walletRepository.findByUserId("user1")).thenReturn(Optional.empty());
+        when(springJpaWalletRepository.findByUserId("user1")).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> walletService.getGetWalletBalance("user1"));
     }
@@ -59,13 +59,13 @@ class WalletServiceTest {
         wallet.setUserId("user1");
         wallet.setBalance(50.0);
 
-        when(walletRepository.findByUserId("user1")).thenReturn(Optional.of(wallet));
-        when(walletRepository.save(any(Wallet.class))).thenReturn(wallet);
+        when(springJpaWalletRepository.findByUserId("user1")).thenReturn(Optional.of(wallet));
+        when(springJpaWalletRepository.save(any(Wallet.class))).thenReturn(wallet);
 
         walletService.updateWalletBalance("user1", 25.0);
 
         assertEquals(75.0, wallet.getBalance());
-        verify(walletRepository).save(wallet);
+        verify(springJpaWalletRepository).save(wallet);
     }
 
     @Test
