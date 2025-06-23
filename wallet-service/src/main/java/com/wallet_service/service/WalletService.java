@@ -2,6 +2,7 @@ package com.wallet_service.service;
 
 import com.wallet_service.application.dto.TransactionMessageDto;
 import com.wallet_service.infrastructure.client.UserClient;
+import com.wallet_service.infrastructure.producer.WalletProducer;
 import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
 import com.wallet_service.application.interactors.CreateWalletUseCase;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,15 @@ public class WalletService {
     private SpringJpaWalletRepository springJpaWalletRepository;
     private CreateWalletUseCase createWalletUseCase;
 
-    public WalletService(SpringJpaWalletRepository springJpaWalletRepository, UserClient userClient) {
+    private WalletProducer walletProducer;
+
+    public WalletService(SpringJpaWalletRepository springJpaWalletRepository,
+                        CreateWalletUseCase createWalletUseCase,
+                        UserClient userClient,
+                        WalletProducer walletProducer) {
         this.springJpaWalletRepository = springJpaWalletRepository;
-        this.createWalletUseCase = new CreateWalletUseCase(springJpaWalletRepository, userClient);
+        this.createWalletUseCase = createWalletUseCase;
+        this.walletProducer = walletProducer;
     }
 
     public void createWallet(String userId) {
@@ -76,7 +83,7 @@ public class WalletService {
         var sender = springJpaWalletRepository.findByUserId(dto.getSenderUserId());
         var receiver = springJpaWalletRepository.findByUserId(dto.getRecipientUserId());
 
-        if (sender.isEmpty() || receiver.isEmpty()) {
+        /**if (sender.isEmpty() || receiver.isEmpty()) {
             throw new IllegalArgumentException("Sender or receiver wallet not found");
             //enviar pra wallet failure
         }
@@ -96,9 +103,10 @@ public class WalletService {
 
         // Save both wallets
         springJpaWalletRepository.save(sender.get());
-        springJpaWalletRepository.save(receiver.get());
+        springJpaWalletRepository.save(receiver.get());**/
 
         // coloca na fila de sucesso
+        walletProducer.processSucessfulPayment(dto);
     }
 
 }

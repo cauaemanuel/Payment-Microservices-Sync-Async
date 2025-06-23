@@ -41,7 +41,7 @@ public class InitiateTransferUseCase {
         transaction.setSourceUserId(sourceId);
         transaction.setDestinationUserId(destinationId);
         transaction.setAmount(amount);
-        transaction.setStatus(TransactionStatus.PENDING);
+        transaction.setStatus(TransactionStatus.PROCESSING);
         transaction.setCreatedAt(LocalDateTime.now());
 
         var transactionSave = transactionRepository.save(transaction);

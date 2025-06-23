@@ -15,11 +15,14 @@ public class PaymentProcessorProducer {
     @Value("${exchange.name}")
     private String paymentExchange;
 
-    @Value("${routing.key.rejected}")
-    private String paymentRejectedRoutingKey ;
+    @Value("${wallet-exchange.name}")
+    private String walletExchange;
 
-    @Value("${routing.key.accepted}")
-    private String paymentAcceptedRoutingKey;
+    @Value("${routing.key.rejected}")
+    private String paymentRejectedRoutingKey;
+
+    @Value("${wallet-routing.key.accepted}")
+    private String paymentAcceptedWalletRoutingKey;
 
     public PaymentProcessorProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -27,8 +30,8 @@ public class PaymentProcessorProducer {
 
     public void sendAcceptedTransactionMessage(TransactionMessageDto dto) {
         log.info("Sending accepted transaction message: {}", dto);
-        log.debug("Sending message to exchange: {}, routing key: {}, message: {}", paymentExchange, paymentAcceptedRoutingKey, dto);
-        rabbitTemplate.convertAndSend(paymentExchange, paymentAcceptedRoutingKey, dto);
+        log.debug("Sending message to exchange: {}, routing key: {}, message: {}", walletExchange, paymentAcceptedWalletRoutingKey, dto);
+        rabbitTemplate.convertAndSend(walletExchange, paymentAcceptedWalletRoutingKey, dto);
     }
 
     public void sendRejectedTransactionMessage(TransactionMessageDto dto) {

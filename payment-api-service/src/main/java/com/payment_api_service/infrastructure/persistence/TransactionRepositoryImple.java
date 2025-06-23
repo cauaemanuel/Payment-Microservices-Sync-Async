@@ -3,6 +3,9 @@ package com.payment_api_service.infrastructure.persistence;
 import com.payment_api_service.domain.entity.Transaction;
 import com.payment_api_service.domain.repository.TransactionRepository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public class TransactionRepositoryImple implements TransactionRepository {
 
     private SpringDataTransactionRepository springDataTransactionRepository;
@@ -16,6 +19,14 @@ public class TransactionRepositoryImple implements TransactionRepository {
         TransactionEntity entity = toEntity(transaction);
         TransactionEntity savedEntity = springDataTransactionRepository.save(entity);
         return toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<Transaction> findById(UUID id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return springDataTransactionRepository.findById(id).map(this::toDomain);
     }
 
     Transaction toDomain(TransactionEntity entity) {
@@ -32,6 +43,7 @@ public class TransactionRepositoryImple implements TransactionRepository {
 
     TransactionEntity toEntity(Transaction transaction) {
         TransactionEntity entity = new TransactionEntity();
+        entity.setId(transaction.getId());
         entity.setSourceUserId(transaction.getSourceUserId());
         entity.setDestinationUserId(transaction.getDestinationUserId());
         entity.setAmount(transaction.getAmount());

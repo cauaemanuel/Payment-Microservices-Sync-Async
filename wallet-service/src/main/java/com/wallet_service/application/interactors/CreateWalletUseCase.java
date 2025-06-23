@@ -3,7 +3,9 @@ package com.wallet_service.application.interactors;
 import com.wallet_service.infrastructure.client.UserClient;
 import com.wallet_service.domain.entity.Wallet;
 import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CreateWalletUseCase {
 
     private SpringJpaWalletRepository springJpaWalletRepository;
