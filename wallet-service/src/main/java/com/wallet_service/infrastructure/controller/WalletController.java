@@ -1,6 +1,7 @@
 package com.wallet_service.infrastructure.controller;
 
-import com.wallet_service.service.WalletService;
+import com.wallet_service.application.interactors.CreateWalletUseCase;
+import com.wallet_service.domain.service.WalletService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,14 +10,16 @@ import org.springframework.web.bind.annotation.*;
 public class WalletController {
 
     private WalletService walletService;
+    private CreateWalletUseCase createWalletUseCase;
 
-    public WalletController(WalletService walletService) {
+    public WalletController(WalletService walletService, CreateWalletUseCase createWalletUseCase) {
         this.walletService = walletService;
+        this.createWalletUseCase = createWalletUseCase;
     }
 
     @PostMapping("/{id}")
     public ResponseEntity createWallet(@PathVariable String id) {
-        walletService.createWallet(id);
+        createWalletUseCase.createWallet(id);
         return ResponseEntity.ok("Wallet created successfully");
     }
 

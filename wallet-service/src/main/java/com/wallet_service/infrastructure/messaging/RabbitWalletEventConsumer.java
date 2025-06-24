@@ -1,25 +1,24 @@
-package com.wallet_service.infrastructure.consumer;
+package com.wallet_service.infrastructure.messaging;
 
 import com.wallet_service.application.dto.TransactionMessageDto;
-import com.wallet_service.service.WalletService;
+import com.wallet_service.application.interactors.ProcessTransactionUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class WalletConsumer {
+public class RabbitWalletEventConsumer {
 
-    private WalletService walletService;
+    private ProcessTransactionUseCase processTransactionUseCase;
 
-    public WalletConsumer(WalletService walletService) {
-        this.walletService = walletService;
+    public RabbitWalletEventConsumer(ProcessTransactionUseCase processTransactionUseCase) {
+        this.processTransactionUseCase = processTransactionUseCase;
     }
-
 
     @RabbitListener(queues = "wallet.transfer") // Replace "wallet.debit" with your queue name
     public void processTransaction(TransactionMessageDto transactionMessageDto){
         log.info("Received transaction: {}", transactionMessageDto);
-        walletService.processTransaction(transactionMessageDto);
+        processTransactionUseCase.processTransaction(transactionMessageDto);
     }
 }
