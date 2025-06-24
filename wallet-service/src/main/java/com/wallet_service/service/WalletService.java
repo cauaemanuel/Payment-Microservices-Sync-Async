@@ -83,7 +83,7 @@ public class WalletService {
         var sender = springJpaWalletRepository.findByUserId(dto.getSenderUserId());
         var receiver = springJpaWalletRepository.findByUserId(dto.getRecipientUserId());
 
-        /**if (sender.isEmpty() || receiver.isEmpty()) {
+        if (sender.isEmpty() || receiver.isEmpty()) {
             throw new IllegalArgumentException("Sender or receiver wallet not found");
             //enviar pra wallet failure
         }
@@ -103,7 +103,7 @@ public class WalletService {
 
         // Save both wallets
         springJpaWalletRepository.save(sender.get());
-        springJpaWalletRepository.save(receiver.get());**/
+        springJpaWalletRepository.save(receiver.get());
 
         // coloca na fila de sucesso
         walletProducer.processSucessfulPayment(dto);

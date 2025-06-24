@@ -11,6 +11,4 @@ public class TransactionMessageDto {
     private String recipientUserId;
     private Double amount;
 
-
-
 }

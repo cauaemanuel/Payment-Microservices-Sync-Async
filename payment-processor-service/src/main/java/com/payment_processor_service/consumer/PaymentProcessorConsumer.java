@@ -16,7 +16,7 @@ public class PaymentProcessorConsumer {
         this.paymentService = paymentService;
     }
 
-    @RabbitListener(queues = "payment.transfer") // Replace "myQueue" with your queue name
+    @RabbitListener(queues = "payment.transfer")
     public void receiveMessage(TransactionMessageDto transaction) {
         log.info("Received transaction: {}", transaction);
         paymentService.processPayment(transaction);

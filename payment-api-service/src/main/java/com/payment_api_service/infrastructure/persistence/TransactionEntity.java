@@ -29,8 +29,6 @@ public class TransactionEntity {
     @Column(nullable = false)
     private TransactionStatus status;
 
-    private String failureReason;
-
     private LocalDateTime createdAt;
 
 }

@@ -36,7 +36,6 @@ public class TransactionRepositoryImple implements TransactionRepository {
         transaction.setDestinationUserId(entity.getDestinationUserId());
         transaction.setAmount(entity.getAmount());
         transaction.setStatus(entity.getStatus());
-        transaction.setFailureReason(entity.getFailureReason());
         transaction.setCreatedAt(entity.getCreatedAt());
         return transaction;
     }
@@ -48,7 +47,6 @@ public class TransactionRepositoryImple implements TransactionRepository {
         entity.setDestinationUserId(transaction.getDestinationUserId());
         entity.setAmount(transaction.getAmount());
         entity.setStatus(transaction.getStatus());
-        entity.setFailureReason(transaction.getFailureReason());
         entity.setCreatedAt(transaction.getCreatedAt());
         return entity;
     }

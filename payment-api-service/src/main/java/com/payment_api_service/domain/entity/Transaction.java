@@ -14,6 +14,5 @@ public class Transaction {
     private String destinationUserId;
     private double amount;
     private TransactionStatus status;
-    private String failureReason;
     private LocalDateTime createdAt;
 }
