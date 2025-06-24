@@ -1,14 +1,14 @@
-package com.payment_api_service.infrastructure.producer;
+package com.payment_api_service.infrastructure.messaging;
 
 import com.payment_api_service.application.dto.TransactionMessageDto;
-import com.payment_api_service.application.dto.TransferDto;
 import com.payment_api_service.domain.entity.Transaction;
+import com.payment_api_service.domain.messaging.PaymentEventPublisher;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentProducer {
+public class RabbitPaymentEventPublisher implements PaymentEventPublisher {
 
     private RabbitTemplate rabbitTemplate;
 
@@ -18,7 +18,7 @@ public class PaymentProducer {
     @Value("${routing.key.transfer}")
     private String paymentRoutingKey ;
 
-    public PaymentProducer(RabbitTemplate rabbitTemplate) {
+    public RabbitPaymentEventPublisher(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 

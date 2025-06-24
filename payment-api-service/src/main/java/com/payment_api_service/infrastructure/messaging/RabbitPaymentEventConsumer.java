@@ -1,22 +1,22 @@
-package com.payment_api_service.infrastructure.consumer;
+package com.payment_api_service.infrastructure.messaging;
 
 import com.payment_api_service.application.dto.TransactionMessageDto;
 import com.payment_api_service.application.interactors.RejectedTransactionUseCase;
-import com.payment_api_service.application.interactors.SucessfulTransaction;
+import com.payment_api_service.application.interactors.SucessfulTransactionUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class PaymentConsumer {
+public class RabbitPaymentEventConsumer {
 
     private RejectedTransactionUseCase rejectedTransactionUseCase;
-    private SucessfulTransaction sucessfulTransaction;
+    private SucessfulTransactionUseCase sucessfulTransactionUseCase;
 
-    public PaymentConsumer(RejectedTransactionUseCase rejectedTransactionUseCase, SucessfulTransaction sucessfulTransaction) {
+    public RabbitPaymentEventConsumer(RejectedTransactionUseCase rejectedTransactionUseCase, SucessfulTransactionUseCase sucessfulTransactionUseCase) {
         this.rejectedTransactionUseCase = rejectedTransactionUseCase;
-        this.sucessfulTransaction = sucessfulTransaction;
+        this.sucessfulTransactionUseCase = sucessfulTransactionUseCase;
     }
 
     @RabbitListener(queues = "payment.rejected")
@@ -28,7 +28,7 @@ public class PaymentConsumer {
     @RabbitListener(queues = "payment.accepted")
     public void processSucessfulTransaction(TransactionMessageDto transactionMessageDto) {
         log.info("Processing successful transaction: {}", transactionMessageDto);
-        sucessfulTransaction.execute(transactionMessageDto);
+        sucessfulTransactionUseCase.execute(transactionMessageDto);
     }
 
 }

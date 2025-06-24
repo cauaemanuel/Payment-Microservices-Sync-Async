@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class SucessfulTransaction {
+public class SucessfulTransactionUseCase {
 
     private TransactionRepository transactionRepository;
 
-    public SucessfulTransaction(TransactionRepository transactionRepository) {
+    public SucessfulTransactionUseCase(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 

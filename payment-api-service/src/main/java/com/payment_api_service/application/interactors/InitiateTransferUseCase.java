@@ -2,9 +2,9 @@ package com.payment_api_service.application.interactors;
 
 import com.payment_api_service.domain.client.WalletClient;
 import com.payment_api_service.domain.entity.Transaction;
+import com.payment_api_service.domain.messaging.PaymentEventPublisher;
 import com.payment_api_service.domain.repository.TransactionRepository;
 import com.payment_api_service.domain.enums.TransactionStatus;
-import com.payment_api_service.infrastructure.producer.PaymentProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 public class InitiateTransferUseCase {
 
     private WalletClient walletClient;
-    private PaymentProducer paymentProducer;
+    private PaymentEventPublisher rabbitPaymentEventPublisher;
     private TransactionRepository transactionRepository;
 
-   public InitiateTransferUseCase(WalletClient walletClient, PaymentProducer paymentProducer, TransactionRepository transactionRepository) {
+   public InitiateTransferUseCase(WalletClient walletClient, PaymentEventPublisher rabbitPaymentEventPublisher, TransactionRepository transactionRepository) {
         this.walletClient = walletClient;
-        this.paymentProducer = paymentProducer;
+        this.rabbitPaymentEventPublisher = rabbitPaymentEventPublisher;
         this.transactionRepository = transactionRepository;
     }
 
@@ -46,6 +46,6 @@ public class InitiateTransferUseCase {
 
         var transactionSave = transactionRepository.save(transaction);
 
-        paymentProducer.processPayment(transactionSave);
+        rabbitPaymentEventPublisher.processPayment(transactionSave);
     }
 }
