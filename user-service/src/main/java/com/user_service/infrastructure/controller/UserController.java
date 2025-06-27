@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -56,7 +58,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Retorna true se o usuário existe, false caso contrário")
     })
     @GetMapping("/exists")
-    public ResponseEntity<Boolean> exists(@RequestParam String userId) {
+    public ResponseEntity<Boolean> exists(@RequestParam UUID userId) {
         boolean exists = userExistsUseCase.execute(userId);
         return new ResponseEntity<>(exists, HttpStatus.OK);
     }

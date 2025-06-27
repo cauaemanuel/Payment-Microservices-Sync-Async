@@ -21,7 +21,7 @@ public class RegisterUserUseCaseImple implements RegisterUserUseCase {
 
     public void execute(CreateUserDTO createUserDto) {
         if (userRepository.findByEmail(createUserDto.email()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já cadastrado com este email");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists with this email");
         }
 
         User newUser = new User();

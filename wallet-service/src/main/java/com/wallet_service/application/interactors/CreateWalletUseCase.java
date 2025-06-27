@@ -6,6 +6,8 @@ import com.wallet_service.domain.entity.Wallet;
 import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class CreateWalletUseCase {
 
@@ -17,12 +19,15 @@ public class CreateWalletUseCase {
         this.userClient = userClient;
     }
 
-    public void createWallet(String userId) {
-        if (userId == null || userId.isEmpty()) {
+    public void createWallet(String userid) {
+
+        if (userid == null || userid.isEmpty()) {
             throw new IllegalArgumentException("User ID cannot be null or empty");
         }
+        // Validate userId
+        var userId = UUID.fromString(userid);
 
-        if (walletRepository.existsByUserId(userId)) {
+        if (walletRepository.existsByUserId(userid)) {
             throw new IllegalArgumentException("Wallet already exists for user ID: " + userId);
         }
 

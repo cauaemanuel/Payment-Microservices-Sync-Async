@@ -15,10 +15,7 @@ public class UserExistsUseCaseImple implements UserExistsUseCase {
         this.userRepository = userRepository;
     }
 
-    public boolean execute(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null or empty");
-        }
-        return userRepository.findById(UUID.fromString(userId)).isPresent();
+    public boolean execute(UUID userId) {
+        return userRepository.findById(userId).isPresent();
     }
 }
