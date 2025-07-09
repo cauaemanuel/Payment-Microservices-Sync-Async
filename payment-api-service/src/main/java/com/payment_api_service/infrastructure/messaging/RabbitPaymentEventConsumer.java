@@ -41,7 +41,4 @@ public class RabbitPaymentEventConsumer {
         log.info("Processing failed transaction: {}", transactionMessageDto);
         failedTransactionUseCase.execute(transactionMessageDto);
     }
-
-
-
 }
