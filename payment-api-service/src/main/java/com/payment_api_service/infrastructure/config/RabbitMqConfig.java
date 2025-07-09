@@ -51,6 +51,7 @@ public class RabbitMqConfig {
     public Queue paymentTransferQueue() {
         return QueueBuilder.durable(PAYMENT_TRANSFER_QUEUE)
                 .withArgument("x-dead-letter-exchange", "")
+                .withArgument("x-queue-type", "quorum")
                 .withArgument("x-dead-letter-routing-key", PAYMENT_DLQ)
                 .withArgument("x-delivery-limit", 5)
                 .build();
@@ -94,6 +95,7 @@ public class RabbitMqConfig {
         return QueueBuilder.durable(WALLET_TRANSFER_QUEUE)
                 .withArgument("x-dead-letter-exchange", "")
                 .withArgument("x-dead-letter-routing-key", PAYMENT_DLQ)
+                .withArgument("x-queue-type", "quorum")
                 .withArgument("x-delivery-limit", 5)
                 .build();
     }

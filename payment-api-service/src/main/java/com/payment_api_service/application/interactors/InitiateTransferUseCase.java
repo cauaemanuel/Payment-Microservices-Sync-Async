@@ -39,6 +39,7 @@ public class InitiateTransferUseCase {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than zero");
         }
 
+
         var transaction = new Transaction();
         transaction.setSourceUserId(sourceId);
         transaction.setDestinationUserId(destinationId);
