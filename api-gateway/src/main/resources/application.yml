@@ -5,4 +5,13 @@ spring:
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/users/**
+            - Path=/users/login
+            - Path=/users/register
+        - id: wallet-service
+          uri: lb://wallet-service
+          predicates:
+            - Path=/wallet/**
+        - id: payment-api-service
+          uri: lb://payment-api-service
+          predicates:
+            - Path=/payments/transfer
