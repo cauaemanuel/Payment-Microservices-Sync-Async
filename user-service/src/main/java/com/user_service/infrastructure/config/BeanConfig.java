@@ -37,4 +37,5 @@ public class BeanConfig {
     public UserRepository userRepository(SpringDataUserRepository springDataUserRepository) {
         return new UserRepositoryImple(springDataUserRepository);
     }
+
 }
