@@ -6,7 +6,9 @@ import com.payment_api_service.domain.messaging.PaymentEventPublisher;
 import com.payment_api_service.domain.repository.TransactionRepository;
 import com.payment_api_service.domain.enums.TransactionStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -28,13 +30,13 @@ public class InitiateTransferUseCase {
 
         log.info("Initiating transfer from source ID: {} to destination ID: {} with amount: {}", sourceId, destinationId, amount);
         if (destinationId == null || destinationId.isEmpty()) {
-            throw new IllegalArgumentException("Destination ID cannot be null or empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination ID cannot be null or empty");
         }
         if (sourceId == null || sourceId.isEmpty()) {
-            throw new IllegalArgumentException("Source ID cannot be null or empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Source ID cannot be null or empty");
         }
         if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than zero");
         }
 
         var transaction = new Transaction();
