@@ -1,5 +1,6 @@
 package com.user_service.infrastructure.controller;
 
+import com.user_service.application.interactors.GetEmailByTokenUseCase;
 import com.user_service.application.interactors.LoginUserUseCase;
 import com.user_service.application.interactors.RegisterUserUseCase;
 import com.user_service.application.interactors.UserExistsUseCase;
@@ -22,13 +23,17 @@ public class UserController {
     private LoginUserUseCase loginUserUseCase;
     private RegisterUserUseCase registerUserUseCase;
     private UserExistsUseCase userExistsUseCase;
+    private GetEmailByTokenUseCase getEmailByTokenUseCase;
 
-    public UserController(LoginUserUseCase loginUserUseCase,
-                          RegisterUserUseCase registerUserUseCase,
-                          UserExistsUseCase userExistsUseCase) {
+    public UserController(
+            LoginUserUseCase loginUserUseCase,
+            RegisterUserUseCase registerUserUseCase,
+            UserExistsUseCase userExistsUseCase,
+            GetEmailByTokenUseCase getEmailByTokenUseCase) {
         this.loginUserUseCase = loginUserUseCase;
         this.registerUserUseCase = registerUserUseCase;
         this.userExistsUseCase = userExistsUseCase;
+        this.getEmailByTokenUseCase = getEmailByTokenUseCase;
     }
 
     @Operation(summary = "Autentica um usuário e retorna o token JWT")
@@ -58,9 +63,15 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Retorna true se o usuário existe, false caso contrário")
     })
     @GetMapping("/exists")
-    public ResponseEntity<Boolean> exists(@RequestParam UUID userId) {
-        boolean exists = userExistsUseCase.execute(userId);
+    public ResponseEntity<Boolean> exists(@RequestParam String userEmail) {
+        boolean exists = userExistsUseCase.execute(userEmail);
         return new ResponseEntity<>(exists, HttpStatus.OK);
+    }
+
+    @GetMapping("/email-by-token")
+    public ResponseEntity<String> getEmailByToken(@RequestParam String token) {
+        var email = getEmailByTokenUseCase.execute(token);
+        return ResponseEntity.ok(email);
     }
 
 }

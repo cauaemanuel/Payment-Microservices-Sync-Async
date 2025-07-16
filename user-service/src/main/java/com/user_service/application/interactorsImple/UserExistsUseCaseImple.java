@@ -15,7 +15,7 @@ public class UserExistsUseCaseImple implements UserExistsUseCase {
         this.userRepository = userRepository;
     }
 
-    public boolean execute(UUID userId) {
-        return userRepository.findById(userId).isPresent();
+    public boolean execute(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 }
