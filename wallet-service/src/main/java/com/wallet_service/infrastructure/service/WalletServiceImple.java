@@ -1,9 +1,8 @@
 package com.wallet_service.infrastructure.service;
+import com.wallet_service.domain.client.UserClient;
 import com.wallet_service.domain.entity.Wallet;
-import com.wallet_service.domain.messaging.WalletEventPublisher;
 import com.wallet_service.domain.repository.WalletRepository;
 import com.wallet_service.domain.service.WalletService;
-import com.wallet_service.infrastructure.client.UserClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

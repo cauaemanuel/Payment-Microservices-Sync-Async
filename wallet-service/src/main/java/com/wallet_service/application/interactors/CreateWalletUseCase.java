@@ -1,16 +1,12 @@
 package com.wallet_service.application.interactors;
 
+import com.wallet_service.domain.client.UserClient;
 import com.wallet_service.domain.repository.WalletRepository;
-import com.wallet_service.infrastructure.client.UserClient;
 import com.wallet_service.domain.entity.Wallet;
-import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
-import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.UUID;
 
 @Component
 public class CreateWalletUseCase {

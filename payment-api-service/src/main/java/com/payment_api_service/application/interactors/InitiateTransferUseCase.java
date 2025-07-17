@@ -1,11 +1,12 @@
 package com.payment_api_service.application.interactors;
 
+import com.payment_api_service.domain.client.UserClient;
 import com.payment_api_service.domain.client.WalletClient;
 import com.payment_api_service.domain.entity.Transaction;
 import com.payment_api_service.domain.messaging.PaymentEventPublisher;
 import com.payment_api_service.domain.repository.TransactionRepository;
 import com.payment_api_service.domain.enums.TransactionStatus;
-import com.payment_api_service.infrastructure.client.UserClient;
+import com.payment_api_service.infrastructure.client.SpringUserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

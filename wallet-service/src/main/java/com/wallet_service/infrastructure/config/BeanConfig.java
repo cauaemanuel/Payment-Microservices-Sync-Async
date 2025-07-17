@@ -1,9 +1,11 @@
 package com.wallet_service.infrastructure.config;
 
+import com.wallet_service.domain.client.UserClient;
 import com.wallet_service.domain.messaging.WalletEventPublisher;
 import com.wallet_service.domain.repository.WalletRepository;
 import com.wallet_service.domain.service.WalletService;
-import com.wallet_service.infrastructure.client.UserClient;
+import com.wallet_service.infrastructure.client.SpringUserClient;
+import com.wallet_service.infrastructure.client.UserClientImple;
 import com.wallet_service.infrastructure.messaging.RabbitWalletEventPublisher;
 import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
 import com.wallet_service.infrastructure.repository.WalletRepositoryImple;
@@ -26,7 +28,12 @@ public class BeanConfig {
     }
 
     @Bean
-    public WalletService walletService(WalletRepository walletRepository, UserClient userClient) {
-        return new WalletServiceImple(walletRepository, userClient);
+    public WalletService walletService(WalletRepository walletRepository, SpringUserClient springUserClient) {
+        return new WalletServiceImple(walletRepository, springUserClient);
+    }
+
+    @Bean
+    public UserClient userClient(SpringUserClient springUserClient) {
+        return new UserClientImple(springUserClient);
     }
 }

@@ -4,10 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.UUID;
-
 @FeignClient(name = "user-service")
-public interface UserClient {
+public interface SpringUserClient {
 
     @GetMapping("/users/exists")
     Boolean exists(@RequestParam("userEmail") String userEmail);

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "user-service")
-public interface UserClient {
+public interface SpringUserClient {
 
     @GetMapping("/users/email-by-token")
     String emailByToken(@RequestParam("token") String token);
