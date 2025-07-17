@@ -5,6 +5,7 @@ import com.payment_api_service.domain.entity.Transaction;
 import com.payment_api_service.domain.messaging.PaymentEventPublisher;
 import com.payment_api_service.domain.repository.TransactionRepository;
 import com.payment_api_service.domain.enums.TransactionStatus;
+import com.payment_api_service.infrastructure.client.UserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -19,20 +20,28 @@ public class InitiateTransferUseCase {
     private WalletClient walletClient;
     private PaymentEventPublisher rabbitPaymentEventPublisher;
     private TransactionRepository transactionRepository;
+    private UserClient userClient;
 
-   public InitiateTransferUseCase(WalletClient walletClient, PaymentEventPublisher rabbitPaymentEventPublisher, TransactionRepository transactionRepository) {
+   public InitiateTransferUseCase(
+            WalletClient walletClient,
+            PaymentEventPublisher rabbitPaymentEventPublisher,
+            TransactionRepository transactionRepository,
+            UserClient userClient) {
         this.walletClient = walletClient;
         this.rabbitPaymentEventPublisher = rabbitPaymentEventPublisher;
         this.transactionRepository = transactionRepository;
+        this.userClient = userClient;
     }
 
-    public void execute(String destinationId, String sourceId, double amount) {
+    public void execute(String destinationEmail, String token, double amount) {
 
-        log.info("Initiating transfer from source ID: {} to destination ID: {} with amount: {}", sourceId, destinationId, amount);
-        if (destinationId == null || destinationId.isEmpty()) {
+       var sourceEmail = userClient.emailByToken(token);
+
+        log.info("Initiating transfer from source ID: {} to destination ID: {} with amount: {}", sourceEmail, destinationEmail, amount);
+        if (destinationEmail == null || destinationEmail.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Destination ID cannot be null or empty");
         }
-        if (sourceId == null || sourceId.isEmpty()) {
+        if (sourceEmail == null || sourceEmail.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Source ID cannot be null or empty");
         }
         if (amount <= 0) {
@@ -41,8 +50,8 @@ public class InitiateTransferUseCase {
 
 
         var transaction = new Transaction();
-        transaction.setSourceUserId(sourceId);
-        transaction.setDestinationUserId(destinationId);
+        transaction.setSourceUserEmail(sourceEmail);
+        transaction.setDestinationUserEmail(destinationEmail);
         transaction.setAmount(amount);
         transaction.setStatus(TransactionStatus.PROCESSING);
         transaction.setCreatedAt(LocalDateTime.now());

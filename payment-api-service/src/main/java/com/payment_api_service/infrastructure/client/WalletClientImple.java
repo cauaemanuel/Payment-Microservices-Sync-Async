@@ -11,12 +11,12 @@ public class WalletClientImple implements WalletClient {
     }
 
     @Override
-    public boolean exists(String userId) {
-        return springWalletClient.exists(userId);
+    public boolean exists(String email) {
+        return springWalletClient.exists(email);
     }
 
     @Override
-    public boolean verifyAmount(String id, Double amount) {
-        return springWalletClient.verifyAmount(id, amount);
+    public boolean verifyAmount(String email, Double amount) {
+        return springWalletClient.verifyAmount(email, amount);
     }
 }

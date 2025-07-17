@@ -1,7 +1,10 @@
 package com.wallet_service.infrastructure.service;
+import com.wallet_service.domain.entity.Wallet;
 import com.wallet_service.domain.messaging.WalletEventPublisher;
 import com.wallet_service.domain.repository.WalletRepository;
 import com.wallet_service.domain.service.WalletService;
+import com.wallet_service.infrastructure.client.UserClient;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,55 +17,52 @@ import org.springframework.web.server.ResponseStatusException;
 public class WalletServiceImple implements WalletService {
 
     private final WalletRepository walletRepository;
-    private final WalletEventPublisher walletEventPublisher;
+    private final UserClient userClient;
 
-    public Double getGetWalletBalance(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null or empty");
-        }
-
-        var wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Wallet not found for user ID: " + userId));
-
+    public Double getGetWalletBalance(String token) {
+        var userEmail = getEmail(token);
+        var wallet = findWalletByUserEmail(userEmail);
         return wallet.getBalance();
     }
 
-    public void updateWalletBalance(String userId, Double newBalance) {
-        if (userId == null || userId.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null or empty");
-        }
+    @Transactional
+    public void updateWalletBalance(String token, Double newBalance) {
+         var userEmail = getEmail(token);
 
         if (newBalance < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "New balance cannot be negative");
         }
 
-        var wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Wallet not found for user ID: " + userId));
-
+        var wallet = findWalletByUserEmail(userEmail);
         wallet.setBalance(wallet.getBalance() + newBalance);
         walletRepository.save(wallet);
     }
 
-    public boolean verifyAmount(String userId, Double amount) {
-        if (userId == null || userId.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null or empty");
-        }
+    public boolean verifyAmount(String email, Double amount) {
 
-        if (amount <= 0) {
+        if (amount == null || amount <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than zero");
         }
 
-        var wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Wallet not found for user ID: " + userId));
-
+        var wallet = findWalletByUserEmail(email);
         return wallet.getBalance() >= amount;
     }
 
-    public boolean isWalletExists(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null or empty");
+    public boolean isWalletExists(String email) {
+        return walletRepository.existsByUserEmail(email);
+    }
+
+    private String getEmail(String token) {
+        var email = userClient.emailByToken(token);
+        if (email == null || email.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token or user not found");
         }
-        return walletRepository.existsByUserId(userId);
+        return email;
+    }
+
+    private Wallet findWalletByUserEmail(String userEmail) {
+        return walletRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Wallet not found for user Email: " + userEmail));
     }
 
 }

@@ -7,7 +7,7 @@ import java.util.UUID;
 @Data
 public class TransactionMessageDto {
     private UUID id;
-    private String senderUserId;
-    private String recipientUserId;
+    private String senderUserEmail;
+    private String recipientUserEmail;
     private Double amount;
 }

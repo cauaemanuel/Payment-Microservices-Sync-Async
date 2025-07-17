@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface SpringWalletClient {
 
     @GetMapping("/wallet/{id}/verify-amount")
-    boolean verifyAmount(@PathVariable String id, @RequestParam Double amount);
+    boolean verifyAmount(@RequestParam String email, @RequestParam Double amount);
 
     @GetMapping("/wallet/exists")
-    boolean exists(@RequestParam String userId);
+    boolean exists(@RequestParam String email);
 }

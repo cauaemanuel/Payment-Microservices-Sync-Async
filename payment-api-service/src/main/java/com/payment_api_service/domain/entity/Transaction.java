@@ -10,8 +10,8 @@ import java.util.UUID;
 public class Transaction {
 
     private UUID id;
-    private String sourceUserId;
-    private String destinationUserId;
+    private String sourceUserEmail;
+    private String destinationUserEmail;
     private double amount;
     private TransactionStatus status;
     private LocalDateTime createdAt;
