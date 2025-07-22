@@ -1,7 +1,9 @@
 package com.wallet_service.infrastructure.client;
 
 import com.wallet_service.domain.client.UserClient;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class UserClientImple implements UserClient {
 
     private SpringUserClient springUserClient;
@@ -19,4 +21,5 @@ public class UserClientImple implements UserClient {
     public String emailByToken(String token) {
         return springUserClient.emailByToken(token);
     }
+
 }

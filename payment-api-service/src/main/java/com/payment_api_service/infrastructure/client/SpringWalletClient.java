@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "wallet-service", url = "${wallet.service.url}")
+@FeignClient(name = "wallet-service", fallback = SpringUserClienteFallback.class)
 public interface SpringWalletClient {
 
     @GetMapping("/wallet/{id}/verify-amount")

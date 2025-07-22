@@ -1,40 +1,29 @@
 package com.user_service.infrastructure.controller;
 
-import com.user_service.application.interactors.GetEmailByTokenUseCase;
-import com.user_service.application.interactors.LoginUserUseCase;
-import com.user_service.application.interactors.RegisterUserUseCase;
-import com.user_service.application.interactors.UserExistsUseCase;
+import com.user_service.domain.interactors.GetEmailByTokenUseCase;
+import com.user_service.domain.interactors.LoginUserUseCase;
+import com.user_service.domain.interactors.RegisterUserUseCase;
+import com.user_service.domain.interactors.UserExistsUseCase;
 import com.user_service.application.dto.CreateUserDTO;
 import com.user_service.application.dto.LoginUserDto;
 import com.user_service.application.dto.RecoveryJwtTokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
-    private LoginUserUseCase loginUserUseCase;
-    private RegisterUserUseCase registerUserUseCase;
-    private UserExistsUseCase userExistsUseCase;
-    private GetEmailByTokenUseCase getEmailByTokenUseCase;
-
-    public UserController(
-            LoginUserUseCase loginUserUseCase,
-            RegisterUserUseCase registerUserUseCase,
-            UserExistsUseCase userExistsUseCase,
-            GetEmailByTokenUseCase getEmailByTokenUseCase) {
-        this.loginUserUseCase = loginUserUseCase;
-        this.registerUserUseCase = registerUserUseCase;
-        this.userExistsUseCase = userExistsUseCase;
-        this.getEmailByTokenUseCase = getEmailByTokenUseCase;
-    }
+    private final LoginUserUseCase loginUserUseCase;
+    private final RegisterUserUseCase registerUserUseCase;
+    private final UserExistsUseCase userExistsUseCase;
+    private final GetEmailByTokenUseCase getEmailByTokenUseCase;
 
     @Operation(summary = "Autentica um usuário e retorna o token JWT")
     @ApiResponses(value = {

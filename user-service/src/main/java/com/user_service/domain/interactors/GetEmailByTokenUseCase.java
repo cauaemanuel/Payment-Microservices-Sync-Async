@@ -1,4 +1,4 @@
-package com.user_service.application.interactors;
+package com.user_service.domain.interactors;
 
 public interface GetEmailByTokenUseCase {
 

@@ -28,7 +28,7 @@ public class BeanConfig {
     }
 
     @Bean
-    public WalletService walletService(WalletRepository walletRepository, SpringUserClient springUserClient) {
+    public WalletService walletService(WalletRepository walletRepository, UserClient springUserClient) {
         return new WalletServiceImple(walletRepository, springUserClient);
     }
 

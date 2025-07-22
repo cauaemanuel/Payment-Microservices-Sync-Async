@@ -1,6 +1,6 @@
 package com.user_service.application.interactorsImple;
 
-import com.user_service.application.interactors.LoginUserUseCase;
+import com.user_service.domain.interactors.LoginUserUseCase;
 import com.user_service.application.dto.LoginUserDto;
 import com.user_service.application.dto.RecoveryJwtTokenDto;
 import com.user_service.infrastructure.persistence.UserEntity;

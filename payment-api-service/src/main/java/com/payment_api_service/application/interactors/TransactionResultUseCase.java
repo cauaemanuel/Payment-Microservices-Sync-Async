@@ -9,20 +9,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class SucessfulTransactionUseCase {
+public class TransactionResultUseCase {
 
     private TransactionRepository transactionRepository;
 
-    public SucessfulTransactionUseCase(TransactionRepository transactionRepository) {
+    public TransactionResultUseCase(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
     }
 
-    public void execute(TransactionMessageDto dto){
-        log.info("Processing successful transaction with ID: {}", dto.getId());
+    public void execute(TransactionMessageDto dto, TransactionStatus status) {
+        log.info("Processing transaction with ID: {}, Status: {}", dto.getId(), status);
         Transaction transaction = transactionRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
-        log.info("Processing successful transaction: {}", dto);
-        transaction.setStatus(TransactionStatus.APPROVED);
+        log.info("Processing transaction: {}", dto);
+        transaction.setStatus(status);
         transactionRepository.save(transaction);
     }
 }
