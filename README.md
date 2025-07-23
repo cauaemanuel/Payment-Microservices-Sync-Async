@@ -1,85 +1,98 @@
+
+
 # Payment Microservices Clean Architecture
 
-Este repositório apresenta um projeto de **microserviços** que simula uma aplicação de transferência de dinheiro, incluindo um **API Gateway** para centralização de autenticação e roteamento. O sistema foi desenvolvido com foco em Clean Architecture, melhores práticas de mercado e uso de comunicação assíncrona via RabbitMQ, além de integração via Eureka Server para service discovery.
+Este repositório apresenta um projeto completo de **microserviços** para uma aplicação de transferência de dinheiro, que inclui um **API Gateway** para centralizar autenticação e roteamento. Desenvolvido com foco em Clean Architecture, comunicação assíncrona via RabbitMQ e service discovery com Eureka Server, este sistema é um exemplo robusto e escalável para soluções financeiras distribuídas.
 
 ---
 
 ## 🚀 Visão Geral
 
-- **Arquitetura:** Microserviços independentes, comunicação via REST e RabbitMQ, descoberta de serviços com Eureka, autenticação JWT.
-- **Objetivo:** Demonstrar um sistema financeiro distribuído, com separação de responsabilidades, escalabilidade e facilidade de manutenção.
-- **Tecnologias:** Java (Spring Boot), RabbitMQ, Eureka, Docker, JWT, Swagger.
+* **Arquitetura:** Microserviços independentes com comunicação REST e RabbitMQ, descoberta dinâmica de serviços via Eureka e autenticação baseada em JWT.
+* **Objetivo:** Criar um sistema financeiro distribuído que segue as melhores práticas do mercado, com alta modularidade, escalabilidade e facilidade de manutenção.
+* **Tecnologias:** Java (Spring Boot), RabbitMQ, Eureka, Docker, JWT, Swagger.
 
 ---
 
 ## 🏗️ Módulos/Microserviços
 
-- **api-gateway:** Centraliza autenticação, roteamento e segurança das requisições.
-- **eureka-server:** Serviço de discovery (Service Registry) para todos os micros.
-- **user-service:** Gerenciamento de usuários (login, cadastro, autenticação).  
-- **wallet-service:** Gerenciamento de carteiras e saldos dos usuários.  
-- **payment-api-service:** Orquestra transações e integra com outros micros (user e wallet).  
-- **payment-processor-service:** Processamento efetivo das transações, integração via RabbitMQ.
+* **api-gateway:** Centraliza autenticação, roteamento e segurança das requisições.
+* **eureka-server:** Serviço de discovery (Service Registry) para todos os micros.
+* **user-service:** Gerencia usuários, registro, login e autenticação.
+* **wallet-service:** Gerencia carteiras digitais e saldos.
+* **payment-api-service:** Orquestra transações entre os micros.
+* **payment-processor-service:** Processa efetivamente as transações via RabbitMQ.
 
 ---
 
 ## ⚡ Foco do Projeto
 
-O principal objetivo foi implementar uma arquitetura de **microserviços desacoplados**, utilizando:
-- RabbitMQ para comunicação assíncrona entre os serviços.
-- Clean Architecture para separação de camadas e responsabilidades.
-- Eureka Server para discovery e registro dinâmico dos micros.
-- API Gateway para centralizar autenticação e roteamento.
+* Arquitetura de **microserviços desacoplados** para escalabilidade.
+* Comunicação assíncrona com RabbitMQ para maior resiliência.
+* Clean Architecture para clareza e separação de responsabilidades.
+* Service discovery dinâmico com Eureka Server.
+* API Gateway para autenticação centralizada e roteamento inteligente.
 
 ---
 
 ## 🌐 Acessos Importantes
 
-- **Eureka Server (dashboard):**  
+* **Eureka Server (Dashboard):**
   [http://localhost:8761](http://localhost:8761)
 
-- **User Service (Swagger):**  
+* **User Service (Swagger UI):**
   [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)
 
-- **Wallet Service (Swagger):**  
+* **Wallet Service (Swagger UI):**
   [http://localhost:8082/swagger-ui.html](http://localhost:8082/swagger-ui.html)
 
-- **Payment API Service (Swagger):**  
+* **Payment API Service (Swagger UI):**
   [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html)
 
 ---
 
-## 🧩 Como rodar
+## 📑 Documentação das APIs
 
-1. **Pré-requisitos:**  
-   - Docker e Docker Compose instalados  
-   - Java 17+
+Para facilitar seus testes e integrações, toda a documentação das rotas está disponível no Postman, com exemplos prontos para importação e execução.
 
-2. **Clone o repositório:**  
-   ```bash
-   git clone https://github.com/cauaemanuel/Payment-Microservices-Clean-Architecture.git
-   ```
+Acesse a documentação completa da API aqui:
+👉 [Postman Collection - Payment Microservices](https://documenter.getpostman.com/view/37902450/2sB34oAbpZ)
 
-3. **Suba o ambiente:**  
-   ```bash
-   cd Payment-Microservices-Clean-Architecture
-   docker-compose up --build
-   ```
+---
 
-4. **Acesse o Eureka:**  
-   - [http://localhost:8761](http://localhost:8761)
+## 🧩 Como rodar o projeto
 
-5. **Acesse os Swaggers dos serviços:**  
-   - User: [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html)  
-   - Wallet: [http://localhost:8082/swagger-ui.html](http://localhost:8082/swagger-ui.html)  
-   - Payment API: [http://localhost:8083/swagger-ui.html](http://localhost:8083/swagger-ui.html)
+### Pré-requisitos
+
+* Docker e Docker Compose instalados
+* Java 21+
+
+### Passos
+
+```bash
+git clone https://github.com/cauaemanuel/Payment-Microservices-Clean-Architecture.git
+cd Payment-Microservices-Clean-Architecture
+docker-compose up --build
+```
+
+Depois, acesse o Eureka e os Swaggers para explorar os serviços.
+
+> ⚠️ **Importante:** Caso as tabelas do banco de dados PostgreSQL não sejam criadas automaticamente na primeira inicialização, execute manualmente o script `data.sql` para criar a estrutura necessária.
+
+---
+
+## 🚧 Status do Projeto
+
+Este projeto ainda está em construção e pode receber atualizações frequentes. Sugestões e contribuições são muito bem-vindas!
 
 ---
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT.
+Projeto licenciado sob a **MIT License**.
 
 ---
 
 > Feito com 💙 por [@cauaemanuel](https://github.com/cauaemanuel)
+
+
