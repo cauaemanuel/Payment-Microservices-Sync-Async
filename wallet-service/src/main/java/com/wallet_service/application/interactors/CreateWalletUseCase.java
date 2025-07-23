@@ -1,14 +1,12 @@
 package com.wallet_service.application.interactors;
 
+import com.wallet_service.domain.client.UserClient;
 import com.wallet_service.domain.repository.WalletRepository;
-import com.wallet_service.infrastructure.client.UserClient;
 import com.wallet_service.domain.entity.Wallet;
-import com.wallet_service.infrastructure.repository.SpringJpaWalletRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.UUID;
 
 @Component
 public class CreateWalletUseCase {
@@ -21,24 +19,25 @@ public class CreateWalletUseCase {
         this.userClient = userClient;
     }
 
-    public void createWallet(String userid) {
+    @Transactional
+    public void createWallet(String token) {
 
-        if (userid == null || userid.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null or empty");
-        }
-        // Validate userId
-        var userId = UUID.fromString(userid);
+        var userEmail = userClient.emailByToken(token);
 
-        if (walletRepository.existsByUserId(userid)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wallet already exists for user ID: ");
+        if (userEmail == null || userEmail.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User email cannot be null or empty");
         }
 
-        if(!userClient.exists(userId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + userId);
+        if (walletRepository.existsByUserEmail(userEmail)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Wallet already exists for user email: ");
+        }
+
+        if(!userClient.exists(userEmail)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with email: " + userEmail);
         }
 
         var wallet = new Wallet();
-        wallet.setUserId(String.valueOf(userId));
+        wallet.setUserEmail(userEmail);
         wallet.setBalance(0.0);
         walletRepository.save(wallet);
     }

@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Tag(name = "Pagamentos", description = "Operações de pagamento")
@@ -33,12 +30,19 @@ public class PaymentController {
     @PostMapping("/transfer")
     public ResponseEntity transfer(
             @Parameter(description = "ID do destinatário", required = true)
-            @RequestParam String destinationId,
-            @Parameter(description = "ID da fonte", required = true)
-            @RequestParam String sourceId,
+            @RequestParam String destinationEmail,
+            @RequestHeader("Authorization") String authorization,
             @Parameter(description = "Valor a ser transferido", required = true)
             @RequestParam double amount) {
-        initiateTransferUseCase.execute(destinationId, sourceId, amount);
+        String token = extractToken(authorization);
+        initiateTransferUseCase.execute(destinationEmail, token, amount);
         return ResponseEntity.ok("Payment transferred successfully");
+    }
+
+    private String extractToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return authorizationHeader;
     }
 }

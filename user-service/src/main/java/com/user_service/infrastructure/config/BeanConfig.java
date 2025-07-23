@@ -1,9 +1,11 @@
 package com.user_service.infrastructure.config;
 
+import com.user_service.domain.interactors.GetEmailByTokenUseCase;
+import com.user_service.application.interactorsImple.GetEmailByTokenUseCaseImple;
 import com.user_service.infrastructure.persistence.UserRepositoryImple;
-import com.user_service.application.interactors.LoginUserUseCase;
-import com.user_service.application.interactors.RegisterUserUseCase;
-import com.user_service.application.interactors.UserExistsUseCase;
+import com.user_service.domain.interactors.LoginUserUseCase;
+import com.user_service.domain.interactors.RegisterUserUseCase;
+import com.user_service.domain.interactors.UserExistsUseCase;
 import com.user_service.application.interactorsImple.LoginUserUseCaseImple;
 import com.user_service.application.interactorsImple.RegisterUserUseCaseImple;
 import com.user_service.application.interactorsImple.UserExistsUseCaseImple;
@@ -36,6 +38,11 @@ public class BeanConfig {
     @Bean
     public UserRepository userRepository(SpringDataUserRepository springDataUserRepository) {
         return new UserRepositoryImple(springDataUserRepository);
+    }
+
+    @Bean
+    public GetEmailByTokenUseCase getEmailByTokenUseCase(TokenService tokenService) {
+        return new GetEmailByTokenUseCaseImple(tokenService);
     }
 
 }

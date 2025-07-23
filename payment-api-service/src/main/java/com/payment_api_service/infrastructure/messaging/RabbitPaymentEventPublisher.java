@@ -25,8 +25,8 @@ public class RabbitPaymentEventPublisher implements PaymentEventPublisher {
     public void processPayment(Transaction transaction) {
         var transferDto = new TransactionMessageDto();
         transferDto.setId(transaction.getId());
-        transferDto.setSenderUserId(transaction.getSourceUserId());
-        transferDto.setRecipientUserId(transaction.getDestinationUserId());
+        transferDto.setSenderUserId(transaction.getSourceUserEmail());
+        transferDto.setRecipientUserId(transaction.getDestinationUserEmail());
         transferDto.setAmount(transaction.getAmount());
 
         rabbitTemplate.convertAndSend(paymentExchange, paymentRoutingKey, transferDto);

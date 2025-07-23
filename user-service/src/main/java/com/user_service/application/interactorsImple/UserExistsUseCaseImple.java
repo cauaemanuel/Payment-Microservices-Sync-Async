@@ -1,11 +1,7 @@
 package com.user_service.application.interactorsImple;
 
 import com.user_service.domain.repository.UserRepository;
-import com.user_service.application.interactors.UserExistsUseCase;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.UUID;
+import com.user_service.domain.interactors.UserExistsUseCase;
 
 public class UserExistsUseCaseImple implements UserExistsUseCase {
 
@@ -15,7 +11,7 @@ public class UserExistsUseCaseImple implements UserExistsUseCase {
         this.userRepository = userRepository;
     }
 
-    public boolean execute(UUID userId) {
-        return userRepository.findById(userId).isPresent();
+    public boolean execute(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 }

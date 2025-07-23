@@ -14,7 +14,7 @@ public class WalletEntity {
     private UUID id;
 
     @Column(unique = true, nullable = false)
-    private String userId;
+    private String userEmail;
 
     private Double balance;
 

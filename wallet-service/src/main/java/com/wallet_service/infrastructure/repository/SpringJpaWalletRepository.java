@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface SpringJpaWalletRepository extends JpaRepository<WalletEntity, UUID> {
 
-    Optional<WalletEntity> findByUserId(String userId);
+    Optional<WalletEntity> findByUserEmail(String userEmail);
 
-    boolean existsByUserId(String userId);
+    boolean existsByUserEmail(String userEmail);
 }

@@ -22,19 +22,19 @@ public class WalletRepositoryImple implements WalletRepository {
     }
 
     @Override
-    public Optional<Wallet> findByUserId(String userId) {
-        return springJpaWalletRepository.findByUserId(userId).map(this::toDomain);
+    public Optional<Wallet> findByUserEmail(String userEmail) {
+        return springJpaWalletRepository.findByUserEmail(userEmail).map(this::toDomain);
     }
 
     @Override
-    public boolean existsByUserId(String userId) {
-        return springJpaWalletRepository.existsByUserId(userId);
+    public boolean existsByUserEmail(String userEmail) {
+        return springJpaWalletRepository.existsByUserEmail(userEmail);
     }
 
     Wallet toDomain(WalletEntity entity) {
         Wallet wallet = new Wallet();
         wallet.setId(entity.getId());
-        wallet.setUserId(entity.getUserId());
+        wallet.setUserEmail(entity.getUserEmail());
         wallet.setBalance(entity.getBalance());
         return wallet;
     }
@@ -42,7 +42,7 @@ public class WalletRepositoryImple implements WalletRepository {
     WalletEntity toEntity(Wallet wallet) {
         WalletEntity entity = new WalletEntity();
         entity.setId(wallet.getId());
-        entity.setUserId(wallet.getUserId());
+        entity.setUserEmail(wallet.getUserEmail());
         entity.setBalance(wallet.getBalance());
         return entity;
     }

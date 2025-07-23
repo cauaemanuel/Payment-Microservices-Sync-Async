@@ -2,15 +2,13 @@ package com.wallet_service.infrastructure.controller;
 
 import com.wallet_service.application.interactors.CreateWalletUseCase;
 import com.wallet_service.domain.service.WalletService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Wallet", description = "Operações de carteira")
 @RestController
 @RequestMapping("/wallet")
+@Slf4j
 public class WalletController {
 
     private final CreateWalletUseCase createWalletUseCase;
@@ -21,45 +19,48 @@ public class WalletController {
         this.walletService = walletService;
     }
 
-    @Operation(summary = "Cria uma carteira para o usuário")
-    @PostMapping("/{id}")
-    public ResponseEntity createWallet(
-            @Parameter(description = "ID do usuário") @PathVariable String id) {
-        createWalletUseCase.createWallet(id);
+    @PostMapping("/create")
+    public ResponseEntity createWallet(@RequestHeader("Authorization") String authorization) {
+        String token = extractToken(authorization);
+        log.info("Creating wallet for token: {}", token);
+        createWalletUseCase.createWallet(token);
         return ResponseEntity.ok("Wallet created successfully");
     }
 
-    @Operation(summary = "Consulta o saldo da carteira")
-    @GetMapping("/{id}/balance")
-    public ResponseEntity<Double> getWalletBalance(
-            @Parameter(description = "ID do usuário") @PathVariable String id) {
-        Double balance = walletService.getGetWalletBalance(id);
+    @GetMapping("/balance")
+    public ResponseEntity<Double> getWalletBalance(@RequestHeader("Authorization") String authorization) {
+        String token = extractToken(authorization);
+        Double balance = walletService.getGetWalletBalance(token);
         return ResponseEntity.ok(balance);
     }
 
-    @Operation(summary = "Atualiza o saldo da carteira")
-    @PostMapping("/{id}/update-balance")
+    @PostMapping("/update-balance")
     public ResponseEntity updateWalletBalance(
-            @Parameter(description = "ID do usuário") @PathVariable String id,
-            @Parameter(description = "Novo saldo") @RequestParam Double newBalance) {
-        walletService.updateWalletBalance(id, newBalance);
+            @RequestHeader("Authorization") String authorization,
+            @RequestParam Double newBalance) {
+        String token = extractToken(authorization);
+        walletService.updateWalletBalance(token, newBalance);
         return ResponseEntity.ok("Wallet balance updated successfully");
     }
 
-    @Operation(summary = "Verifica se o valor é válido para a carteira")
-    @GetMapping("/{id}/verify-amount")
+    @GetMapping("/verify-amount")
     public ResponseEntity verifyAmount(
-            @Parameter(description = "ID do usuário") @PathVariable String id,
-            @Parameter(description = "Valor a verificar") @RequestParam Double amount) {
-        boolean isValid = walletService.verifyAmount(id, amount);
+            @RequestParam String email,
+            @RequestParam Double amount) {
+        boolean isValid = walletService.verifyAmount(email, amount);
         return ResponseEntity.ok(isValid);
     }
 
-    @Operation(summary = "Verifica se a carteira existe")
     @GetMapping("/exists")
-    public ResponseEntity<Boolean> exists(
-            @Parameter(description = "ID do usuário") @RequestParam String userId) {
-        boolean exists = walletService.isWalletExists(userId);
+    public ResponseEntity<Boolean> exists(@RequestParam String email) {
+        boolean exists = walletService.isWalletExists(email);
         return ResponseEntity.ok(exists);
+    }
+
+    private String extractToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return authorizationHeader;
     }
 }

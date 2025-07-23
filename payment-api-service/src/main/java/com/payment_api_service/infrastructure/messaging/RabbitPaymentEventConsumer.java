@@ -1,9 +1,8 @@
 package com.payment_api_service.infrastructure.messaging;
 
 import com.payment_api_service.application.dto.TransactionMessageDto;
-import com.payment_api_service.application.interactors.FailedTransactionUseCase;
-import com.payment_api_service.application.interactors.RejectedTransactionUseCase;
-import com.payment_api_service.application.interactors.SucessfulTransactionUseCase;
+import com.payment_api_service.application.interactors.TransactionResultUseCase;
+import com.payment_api_service.domain.enums.TransactionStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -12,33 +11,23 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class RabbitPaymentEventConsumer {
 
-    private RejectedTransactionUseCase rejectedTransactionUseCase;
-    private SucessfulTransactionUseCase sucessfulTransactionUseCase;
-    private FailedTransactionUseCase failedTransactionUseCase;
-
-    public RabbitPaymentEventConsumer(RejectedTransactionUseCase rejectedTransactionUseCase,
-                                      SucessfulTransactionUseCase sucessfulTransactionUseCase,
-                                      FailedTransactionUseCase failedTransactionUseCase) {
-        this.rejectedTransactionUseCase = rejectedTransactionUseCase;
-        this.sucessfulTransactionUseCase = sucessfulTransactionUseCase;
-        this.failedTransactionUseCase = failedTransactionUseCase;
-    }
+    private TransactionResultUseCase transactionResultUseCase;
 
     @RabbitListener(queues = "payment.rejected")
     public void processRejectedTransaction(TransactionMessageDto transactionMessageDto) {
         log.info("Processing rejected transaction: {}", transactionMessageDto);
-        rejectedTransactionUseCase.execute(transactionMessageDto);
+        transactionResultUseCase.execute(transactionMessageDto, TransactionStatus.REJECTED);
     }
 
     @RabbitListener(queues = "payment.accepted")
     public void processSucessfulTransaction(TransactionMessageDto transactionMessageDto) {
         log.info("Processing successful transaction: {}", transactionMessageDto);
-        sucessfulTransactionUseCase.execute(transactionMessageDto);
+        transactionResultUseCase.execute(transactionMessageDto, TransactionStatus.APPROVED);
     }
 
     @RabbitListener(queues = "payment.dlq")
     public void processFailedTransaction(TransactionMessageDto transactionMessageDto) {
         log.info("Processing failed transaction: {}", transactionMessageDto);
-        failedTransactionUseCase.execute(transactionMessageDto);
+        transactionResultUseCase.execute(transactionMessageDto, TransactionStatus.FAILED);
     }
 }

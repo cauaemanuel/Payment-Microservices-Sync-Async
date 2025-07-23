@@ -32,8 +32,8 @@ public class TransactionRepositoryImple implements TransactionRepository {
     Transaction toDomain(TransactionEntity entity) {
         Transaction transaction = new Transaction();
         transaction.setId(entity.getId());
-        transaction.setSourceUserId(entity.getSourceUserId());
-        transaction.setDestinationUserId(entity.getDestinationUserId());
+        transaction.setSourceUserEmail(entity.getSourceUserId());
+        transaction.setDestinationUserEmail(entity.getDestinationUserId());
         transaction.setAmount(entity.getAmount());
         transaction.setStatus(entity.getStatus());
         transaction.setCreatedAt(entity.getCreatedAt());
@@ -43,8 +43,8 @@ public class TransactionRepositoryImple implements TransactionRepository {
     TransactionEntity toEntity(Transaction transaction) {
         TransactionEntity entity = new TransactionEntity();
         entity.setId(transaction.getId());
-        entity.setSourceUserId(transaction.getSourceUserId());
-        entity.setDestinationUserId(transaction.getDestinationUserId());
+        entity.setSourceUserId(transaction.getSourceUserEmail());
+        entity.setDestinationUserId(transaction.getDestinationUserEmail());
         entity.setAmount(transaction.getAmount());
         entity.setStatus(transaction.getStatus());
         entity.setCreatedAt(transaction.getCreatedAt());
