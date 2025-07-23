@@ -1,0 +1,92 @@
+
+services:
+  eureka:
+    build:
+      context: ./eureka-server
+    ports:
+      - 8761:8761
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - 8080:8080
+    depends_on:
+      - eureka
+
+  postgres-db-paymentapi:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: paymentapiuser
+      POSTGRES_PASSWORD: paymentapipassword
+      POSTGRES_DB: paymentapidb
+    ports:
+      - 5432:5432
+
+  rabbitmq-paymentapi:
+    image: rabbitmq:management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+        RABBITMQ_DEFAULT_USER: paymentapiuser
+        RABBITMQ_DEFAULT_PASS: paymentapipassword
+
+  user-service:
+    build:
+      context: ./user-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db-paymentapi:5432/paymentapidb
+      SPRING_DATASOURCE_USERNAME: paymentapiuser
+      SPRING_DATASOURCE_PASSWORD: paymentapipassword
+    depends_on:
+      - eureka
+      - postgres-db-paymentapi
+      - rabbitmq-paymentapi
+
+  wallet-service:
+    build:
+      context: ./wallet-service
+    environment:
+       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db-paymentapi:5432/paymentapidb
+       SPRING_DATASOURCE_USERNAME: paymentapiuser
+       SPRING_DATASOURCE_PASSWORD: paymentapipassword
+       RABBITMQ_HOST: rabbitmq-paymentapi
+       RABBITMQ_PORT: 5672
+       RABBITMQ_USERNAME: paymentapiuser
+       RABBITMQ_PASSWORD: paymentapipassword
+    depends_on:
+      - eureka
+      - postgres-db-paymentapi
+      - rabbitmq-paymentapi
+
+  payment-api-service:
+    build:
+      context: ./payment-api-service
+    environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db-paymentapi:5432/paymentapidb
+        SPRING_DATASOURCE_USERNAME: paymentapiuser
+        SPRING_DATASOURCE_PASSWORD: paymentapipassword
+        RABBITMQ_HOST: rabbitmq-paymentapi
+        RABBITMQ_PORT: 5672
+        RABBITMQ_USERNAME: paymentapiuser
+        RABBITMQ_PASSWORD: paymentapipassword
+    depends_on:
+      - eureka
+      - postgres-db-paymentapi
+      - rabbitmq-paymentapi
+
+
+  payment-processor:
+    build:
+      context: ./payment-processor-service
+    environment:
+       RABBITMQ_HOST: rabbitmq-paymentapi
+       RABBITMQ_PORT: 5672
+       RABBITMQ_USERNAME: paymentapiuser
+       RABBITMQ_PASSWORD: paymentapipassword
+    depends_on:
+      - eureka
+      - postgres-db-paymentapi
+      - rabbitmq-paymentapi
+

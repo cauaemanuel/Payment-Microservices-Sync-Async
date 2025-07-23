@@ -21,8 +21,8 @@ public class ProcessTransactionUseCase {
 
     public void processTransaction(TransactionMessageDto dto){
 
-        var sender = walletRepository.findByUserEmail(dto.getSenderUserEmail());
-        var receiver = walletRepository.findByUserEmail(dto.getRecipientUserEmail());
+        var sender = walletRepository.findByUserEmail(dto.getSenderUserId());
+        var receiver = walletRepository.findByUserEmail(dto.getRecipientUserId());
 
         if (sender.isEmpty() || receiver.isEmpty()) {
             throw new IllegalArgumentException("Sender or receiver wallet not found");

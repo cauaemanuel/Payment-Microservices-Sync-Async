@@ -24,11 +24,11 @@ public class PaymentService {
         if (!permitido) {
             // Envia para a fila do RabbitMQ para registrar como pagamento rejeitado
             producer.sendRejectedTransactionMessage(dto);
-            log.info("Pagamento rejeitado para o usuário: {}", dto.getSenderUserEmail());
+            log.info("Pagamento rejeitado para o usuário: {}", dto.getSenderUserId());
         } else {
             // Processa normalmente o pagamento
             producer.sendAcceptedTransactionMessage(dto);
-            log.info("Pagamento aceito para o usuário: {}", dto.getSenderUserEmail());
+            log.info("Pagamento aceito para o usuário: {}", dto.getSenderUserId());
         }
     }
 }

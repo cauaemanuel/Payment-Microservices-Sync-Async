@@ -13,6 +13,10 @@ public class RabbitPaymentEventConsumer {
 
     private TransactionResultUseCase transactionResultUseCase;
 
+    public RabbitPaymentEventConsumer(TransactionResultUseCase transactionResultUseCase) {
+        this.transactionResultUseCase = transactionResultUseCase;
+    }
+
     @RabbitListener(queues = "payment.rejected")
     public void processRejectedTransaction(TransactionMessageDto transactionMessageDto) {
         log.info("Processing rejected transaction: {}", transactionMessageDto);

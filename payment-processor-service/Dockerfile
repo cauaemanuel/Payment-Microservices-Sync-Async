@@ -9,5 +9,5 @@ RUN mvn clean install -U -DskipTests
 FROM openjdk:24-jdk-slim
 COPY --from=builder /app/target/*.jar /app/app.jar
 WORKDIR /app
-EXPOSE 8761
+EXPOSE 8084
 CMD ["java", "-jar", "app.jar"]

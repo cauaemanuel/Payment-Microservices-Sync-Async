@@ -4,10 +4,10 @@ COPY src /app/src
 COPY pom.xml /app
 
 WORKDIR /app
-RUN mvn clean install -U -DskipTests
+RUN mvn clean install -U
 
 FROM openjdk:24-jdk-slim
 COPY --from=builder /app/target/*.jar /app/app.jar
 WORKDIR /app
-EXPOSE 8761
+EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]

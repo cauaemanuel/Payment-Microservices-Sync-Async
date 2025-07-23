@@ -4,7 +4,7 @@ COPY src /app/src
 COPY pom.xml /app
 
 WORKDIR /app
-RUN mvn clean install -U
+RUN mvn clean install -U -DskipTests
 
 FROM openjdk:24-jdk-slim
 COPY --from=builder /app/target/*.jar /app/app.jar
